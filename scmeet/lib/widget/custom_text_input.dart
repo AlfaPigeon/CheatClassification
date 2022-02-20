@@ -24,28 +24,31 @@ class CustomTextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      //validator: validator,
-      //onEditingComplete:
-      //    onEditingComplete ?? () => FocusScope.of(context).nextFocus(),
-      obscureText: obscure,
-      controller: controller,
-      decoration: InputDecoration(
-        errorStyle: myTextStyle(15, FontWeight.normal, Colors.red),
-        prefixIcon: Icon(
-          icon ?? Icons.mail,
-          color: Color(0xff7c807f),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 1.2,
+      child: TextFormField(
+        //validator: validator,
+        //onEditingComplete:
+        //    onEditingComplete ?? () => FocusScope.of(context).nextFocus(),
+        obscureText: obscure,
+        controller: controller,
+        decoration: InputDecoration(
+          errorStyle: myTextStyle(15, FontWeight.normal, Colors.red),
+          prefixIcon: Icon(
+            icon ?? Icons.mail,
+            color: iconColor,
+          ),
+          hintText: hint,
+          hintStyle: myTextStyle(15, FontWeight.normal, secondaryColor),
+          filled: true,
+          fillColor: textInputColor,
+          enabledBorder: buildBorder,
+          border: buildBorder,
+          errorBorder: buildBorder,
+          focusedBorder: buildBorder,
+          disabledBorder: buildBorder,
+          focusedErrorBorder: buildBorder,
         ),
-        hintText: hint,
-        hintStyle: myTextStyle(15, FontWeight.normal, secondaryColor),
-        filled: true,
-        fillColor: Color(0xffe7edeb),
-        enabledBorder: buildBorder,
-        border: buildBorder,
-        errorBorder: buildBorder,
-        focusedBorder: buildBorder,
-        disabledBorder: buildBorder,
-        focusedErrorBorder: buildBorder,
       ),
     );
   }
