@@ -5,7 +5,7 @@ import 'package:scmeet/widget/remote_connection.dart';
 class RemoteVideoPageView extends StatefulWidget {
   final List<Connection> connections;
 
-  RemoteVideoPageView({required this.connections});
+  const RemoteVideoPageView({Key? key, required this.connections}) : super(key: key);
 
   @override
   State createState() => _RemoteVideoPageViewState();
@@ -25,20 +25,18 @@ class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
       ));
     });
 
-    return Container(
-      child: Center(
-        child: OrientationBuilder(builder: (context, orientation) {
-          return orientation == Orientation.portrait
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: widgets,
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: widgets,
-                );
-        }),
-      ),
+    return Center(
+      child: OrientationBuilder(builder: (context, orientation) {
+        return orientation == Orientation.portrait
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: widgets,
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: widgets,
+              );
+      }),
     );
   }
 

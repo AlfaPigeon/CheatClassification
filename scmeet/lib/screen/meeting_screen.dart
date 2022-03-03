@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart' as getx;
+import 'package:scmeet/constants.dart';
 import 'package:scmeet/model/meeting_detail.dart';
 import 'package:scmeet/model/user.dart';
+import 'package:scmeet/screen/chat_screen.dart';
 import 'package:scmeet/screen/home_screen.dart';
 import 'package:scmeet/webrtc/meeting.dart';
 import 'package:scmeet/webrtc/message_format.dart';
@@ -11,7 +13,8 @@ import 'package:scmeet/widget/control_panel.dart';
 import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/remote_video_page_view.dart';
 
-enum PopUpChoiceEnum { CopyLink, CopyId }
+// ignore: constant_identifier_names
+enum PopUpChoiceEnum {CopyId }
 
 class PopUpChoice {
   PopUpChoiceEnum id;
@@ -25,7 +28,7 @@ class MeetingScreen extends StatefulWidget {
   final String name;
   final MeetingDetail meetingDetail;
 
-  MeetingScreen(
+  const MeetingScreen(
       {Key? key,
       required this.meetingId,
       required this.name,
@@ -38,7 +41,8 @@ class MeetingScreen extends StatefulWidget {
 
 class _MeetingScreenState extends State<MeetingScreen> {
   bool isValidMeeting = false;
-  TextEditingController textEditingController = new TextEditingController();
+  TextEditingController textEditingController = TextEditingController();
+  // ignore: avoid_init_to_null
   Meeting? meeting = null;
   bool isConnectionFailed = false;
   String userId = "";
@@ -58,11 +62,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
   };
   final List<PopUpChoice> choices = [
     PopUpChoice(PopUpChoiceEnum.CopyId, 'Copy Meeting ID'),
-    PopUpChoice(PopUpChoiceEnum.CopyLink, 'Copy Meeting Link'),
   ];
   bool isChatOpen = false;
   List<MessageFormat> messages = [];
-  final PageController pageController = new PageController();
+  final PageController pageController = PageController();
   User user = getx.Get.find();
 
   @override
@@ -97,7 +100,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
     _localRenderer.srcObject = _localstream;
     //_localRenderer = RTCVideoViewObjectFit.RTCVideoViewObjectFitContain as RTCVideoRenderer;
-    meeting = new Meeting(
+    meeting = Meeting(
       meetingId: widget.meetingDetail.id,
       stream: _localstream,
       userId: userId,
@@ -138,7 +141,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
       });
     });
     meeting?.on('failed', null, (ev, ctx) {
-      final snackBar = SnackBar(content: Text('Connection Failed'));
+      const snackBar = SnackBar(content: Text('Connection Failed'));
+      // ignore: deprecated_member_use
       scaffoldKey.currentState!.showSnackBar(snackBar);
       setState(() {
         isConnectionFailed = true;
@@ -153,7 +157,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   void meetingEndedEvent() {
-    final snackBar = SnackBar(content: Text('Meeing Ended'));
+    const snackBar = SnackBar(content: Text('Meeing Ended'));
+    // ignore: deprecated_member_use
     scaffoldKey.currentState!.showSnackBar(snackBar);
     goToHome();
   }
@@ -195,6 +200,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   bool isHost() {
+    // ignore: unnecessary_null_comparison
     return meeting != null && widget.meetingDetail != null
         ? meeting!.userId == widget.meetingDetail.hostId
         : false;
@@ -210,14 +216,13 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   void _select(PopUpChoice choice) async {
     final meetingId = widget.meetingId;
-    final snackBar = SnackBar(content: Text('Copied'));
+    const snackBar = SnackBar(content: Text('Copied'));
     String text = '';
     if (choice.id == PopUpChoiceEnum.CopyId) {
       text = meetingId;
-    } else if (choice.id == PopUpChoiceEnum.CopyLink) {
-      text = 'https://meetx.madankumar.me/meeting/$meetingId';
-    }
+    } 
     await Clipboard.setData(ClipboardData(text: text));
+    // ignore: deprecated_member_use
     scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 
@@ -314,26 +319,26 @@ class _MeetingScreenState extends State<MeetingScreen> {
   @override
   Widget build(BuildContext context) {
     return meeting == null
-        ? CircularProgressIndicator()
+        ? const CircularProgressIndicator()
         : Scaffold(
             key: scaffoldKey,
             appBar: AppBar(
-              title: Text("MeetX"),
+              title: const Text("SC Meet"),
               actions: _buildActions(),
-              backgroundColor: Colors.green,
+              backgroundColor: secondaryColor,
             ),
             body: PageView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               controller: pageController,
               children: <Widget>[
                 _buildMeetingRoom(),
-                /* ChatScreen(
+                 ChatScreen(
                   messages: messages,
                   onSendMessage: handleSendMessage,
                   connections: meeting!.connections,
                   userId: meeting!.userId,
                   userName: meeting!.name,
-                ), */
+                ),
               ],
             ),
             bottomNavigationBar: ControlPanel(

@@ -9,7 +9,6 @@ import 'package:scmeet/webrtc/payload_data.dart';
 import 'package:scmeet/webrtc/transport.dart';
 
 class Meeting extends EventEmitter {
-  //final String url = 'wss://api.meetx.madankumar.me/websocket/meeting';
   final String url = 'ws://3.65.205.17:8081/websocket/meeting';
   Transport? transport;
   String meetingId;
