@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:scmeet/constants.dart';
 import 'package:scmeet/webrtc/connection.dart';
+import 'package:scmeet/widget/custom_text.dart';
 
 class RemoteConnection extends StatefulWidget {
-//  final RTCVideoRenderer renderer = new RTCVideoRenderer();
   final RTCVideoRenderer renderer;
   final Connection? connection;
 
-//  final MediaStream stream;
-
-//  RemoteConnection({@required this.stream});
-  RemoteConnection({required this.renderer, required this.connection});
+  // ignore: use_key_in_widget_constructors
+  const RemoteConnection({required this.renderer, required this.connection});
 
   @override
   _RemoteConnectionState createState() => _RemoteConnectionState();
@@ -20,7 +19,6 @@ class _RemoteConnectionState extends State<RemoteConnection> {
   @override
   void initState() {
     super.initState();
-    print(widget.connection);
   }
 
   @override
@@ -33,18 +31,18 @@ class _RemoteConnectionState extends State<RemoteConnection> {
     return Expanded(
       child: Stack(
         children: <Widget>[
-          RTCVideoView(widget.renderer, objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain),
+          RTCVideoView(widget.renderer,
+              objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain),
           Text(widget.renderer.toString()),
           Positioned(
             child: Container(
-              padding: EdgeInsets.all(5),
-              color: Color.fromRGBO(0, 0, 0, 0.7),
-              child: Text(
-                widget.connection!.name,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
-                ),
+              padding: const EdgeInsets.all(5),
+              color: thirdColor,
+              child: CustomText(
+                text: widget.connection!.name,
+                fontSize: 20.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
             bottom: 10.0,
@@ -53,20 +51,21 @@ class _RemoteConnectionState extends State<RemoteConnection> {
           Container(
             color: widget.connection!.videoEnabled
                 ? Colors.transparent
-                : Colors.black,
+                : thirdColor,
             child: Center(
-                child: Text(
-              widget.connection!.videoEnabled ? '' : widget.connection!.name,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 30.0,
-              ),
+                child: CustomText(
+              text: widget.connection!.videoEnabled
+                  ? ''
+                  : widget.connection!.name,
+              fontSize: 30.0,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             )),
           ),
           Positioned(
             child: Container(
-              padding: EdgeInsets.all(5),
-              color: Color.fromRGBO(0, 0, 0, 0.7),
+              padding: const EdgeInsets.all(5),
+              color: thirdColor,
               child: Row(
                 children: <Widget>[
                   Icon(
@@ -75,7 +74,7 @@ class _RemoteConnectionState extends State<RemoteConnection> {
                         : Icons.videocam_off,
                     color: Colors.white,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                     height: 10,
                   ),

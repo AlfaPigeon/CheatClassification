@@ -11,7 +11,7 @@ class ControlPanel extends StatelessWidget {
   final VoidCallback onReconnect;
   final VoidCallback onChatToggle;
 
-  ControlPanel({
+  const ControlPanel({Key? key, 
     required this.onAudioToggle,
     required this.onVideoToggle,
     required this.videoEnabled,
@@ -20,7 +20,7 @@ class ControlPanel extends StatelessWidget {
     required this.isConnectionFailed,
     required this.onChatToggle,
     required this.isChatOpen,
-  });
+  }) : super(key: key);
 
   List<Widget> buildControls() {
     if (!isConnectionFailed) {

@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
       print('meetingDetail $meetingDetail');
       join(data);
     } catch (err) {
-      final snackbar = SnackBar(content: Text('Invalid MeetingId'));
+      const snackbar = SnackBar(content: Text('Invalid MeetingId'));
       scaffoldKey.currentState?.showSnackBar(snackbar);
       print("errorr $err");
     }
