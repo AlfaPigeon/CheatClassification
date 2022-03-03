@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scmeet/constants.dart';
 import 'package:scmeet/controller/authentication_controller.dart';
+import 'package:scmeet/model/user.dart';
 import 'package:scmeet/screen/home_screen.dart';
 import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/custom_text.dart';
@@ -70,14 +71,11 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                       ? "Login"
                       : "Register",
                   onTap: () {
-                    if (authController.authenticationFormState.value) {
                       //LOGIN
                       Get.to(const HomeScreen());
-                    } else {
-                      //REGISTER
-                      Get.to(const HomeScreen());
-                    }
-                  })),
+                    
+                  },
+                  width: MediaQuery.of(context).size.width / 1.2)),
               const SizedBox(height: 10),
               Obx(
                 () => GestureDetector(
@@ -145,19 +143,18 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                 hint: "Type your surname",
               ),
               const SizedBox(height: 20),
-              Obx(() => CustomButton(
+              Obx(
+                () => CustomButton(
                   text: authController.authenticationFormState.value
                       ? "Login"
                       : "Register",
                   onTap: () {
-                    if (authController.authenticationFormState.value) {
-                      //LOGIN
+                      Get.put(User(email: widget.emailController.text, name: widget.nameController.text, surname: widget.surnameController.text));
                       Get.to(const HomeScreen());
-                    } else {
-                      //REGISTER
-                      Get.to(const HomeScreen());
-                    }
-                  })),
+                  },
+                  width: MediaQuery.of(context).size.width / 1.2,
+                ),
+              ),
               const SizedBox(height: 10),
               Obx(
                 () => GestureDetector(

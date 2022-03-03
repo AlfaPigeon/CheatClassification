@@ -4,8 +4,9 @@ import 'package:scmeet/constants.dart';
 class CustomButton extends StatelessWidget {
   final String text;
   final Function()? onTap;
+  final double width;
 
-  const CustomButton({Key? key, required this.text, required this.onTap})
+  const CustomButton({Key? key, required this.text, required this.onTap, required this.width})
       : super(key: key);
 
   @override
@@ -13,7 +14,7 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
         onTap: onTap,
         child: Container(
-          width: MediaQuery.of(context).size.width / 1.2,
+          width: width,
           alignment: Alignment.center,
           padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
