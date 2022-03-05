@@ -149,7 +149,8 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                       ? "Login"
                       : "Register",
                   onTap: () {
-                      Get.put(User(email: widget.emailController.text, name: widget.nameController.text, surname: widget.surnameController.text));
+                      //TODO
+                      //Get.put(User(email: widget.emailController.text, name: widget.nameController.text, surname: widget.surnameController.text));
                       Get.to(const HomeScreen());
                   },
                   width: MediaQuery.of(context).size.width / 1.2,

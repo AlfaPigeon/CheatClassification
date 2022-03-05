@@ -1,8 +1,10 @@
 import 'dart:convert';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:scmeet/constants.dart';
 import 'package:scmeet/model/meeting_detail.dart';
 import 'package:scmeet/model/user.dart';
@@ -21,20 +23,44 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String? meetingId;
   TextEditingController controller = TextEditingController();
-  User user = Get.find();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late User user;
+  String _timeString = "";
+  @override
+  void initState() {
+    super.initState();
+    Get.put(
+        User(email: "kemalbayikk@gmail.com", name: "Kemal", surname: "Bayık"));
+    user = Get.find();
+    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getCurrentTime());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgColor,
+      appBar: AppBar(
+        backgroundColor: backgColor,
+        elevation: 0,
+        title: const CustomText(
+          text: "Home",
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           CustomText(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              text: "WELCOME ${user.name} ${user.surname}",
+              text: "Welcome ${user.name} ${user.surname}",
+              color: Colors.white),
+          CustomText(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              text: _timeString,
               color: Colors.white),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontSize: 13,
                   fontWeight: FontWeight.w300,
                   text: secondText,
-                  color: Colors.white)
+                  color: Colors.white),
             ],
           ),
         ),
@@ -104,13 +130,19 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(title),
+            backgroundColor: backgColor,
+            title: CustomText(
+                fontSize: 24,
+                fontWeight: FontWeight.w300,
+                text: title,
+                color: Colors.white),
             content: TextField(
               onChanged: (value) {
                 valueText = value;
               },
               controller: controller,
-              //decoration: InputDecoration(hintText: "Text Field in Dialog"),
+              decoration: InputDecoration(hoverColor: Colors.white),
+              style :  GoogleFonts.montserrat(color: Colors.white),
             ),
             actions: <Widget>[
               CustomButton(
@@ -134,7 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void joinMeetingFunction() async {
     final meetingId = controller.text;
-    print('Joined meeting $meetingId');
     validateMeeting(meetingId);
   }
 
@@ -142,7 +173,6 @@ class _HomeScreenState extends State<HomeScreen> {
     var response = await startMeeting();
     final body = json.decode(response.body);
     final meetingId = body['meetingId'];
-    print('Started meeting $meetingId');
     validateMeeting(meetingId);
   }
 
@@ -150,15 +180,12 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       http.Response response = await joinMeeting(meetingId);
       var data = json.decode(response.body);
-      print(data);
-      final meetingDetail = MeetingDetail.fromJson(data);
-      print(meetingDetail.id);
-      print('meetingDetail $meetingDetail');
+      //final meetingDetail = MeetingDetail.fromJson(data);
       join(data);
     } catch (err) {
       const snackbar = SnackBar(content: Text('Invalid MeetingId'));
+      // ignore: deprecated_member_use
       scaffoldKey.currentState?.showSnackBar(snackbar);
-      print("errorr $err");
     }
   }
 
@@ -168,5 +195,13 @@ class _HomeScreenState extends State<HomeScreen> {
         meetingId: meetingDetail.id,
         name: "${user.name} ${user.surname}",
         meetingDetail: meetingDetail));
+  }
+
+  _getCurrentTime() {
+    setState(() {
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('kk:mm:ss \n EEE d MMM').format(now);
+      _timeString = formattedDate;
+    });
   }
 }
