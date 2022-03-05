@@ -284,34 +284,50 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   Widget _buildMeetingRoom() {
-    return Stack(
-      children: <Widget>[
-        meeting!.connections.isNotEmpty
-            ? RemoteVideoPageView(
-                connections: meeting!.connections,
-              )
-            : const Center(
-                child: Text(
-                  'Waiting for participants to join the meeting',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 24.0,
+    return Row(
+      children: [
+         ControlPanel(
+              onAudioToggle: onAudioToggle,
+              onVideoToggle: onVideoToggle,
+              videoEnabled: isVideoEnabled(),
+              audioEnabled: isAudioEnabled(),
+              isConnectionFailed: isConnectionFailed,
+              onReconnect: handleReconnect,
+              onChatToggle: handleChatToggle,
+              isChatOpen: isChatOpen,
+            ),
+        Expanded(
+          child: Stack(
+            children: <Widget>[
+              meeting!.connections.isNotEmpty
+                  ? RemoteVideoPageView(
+                      connections: meeting!.connections,
+                    )
+                  : const Center(
+                      child: Text(
+                        'Waiting for participants to join the meeting',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 24.0,
+                        ),
+                      ),
+                    ),
+              Positioned(
+                bottom: 10.0,
+                right: 0.0,
+                child: SizedBox(
+                  width: 150.0,
+                  height: 200.0,
+                  child: RTCVideoView(
+                    _localRenderer,
+                    objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
                   ),
                 ),
-              ),
-        Positioned(
-          bottom: 10.0,
-          right: 0.0,
-          child: SizedBox(
-            width: 150.0,
-            height: 200.0,
-            child: RTCVideoView(
-              _localRenderer,
-              objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
-            ),
+              )
+            ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -323,7 +339,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
         : Scaffold(
             key: scaffoldKey,
             appBar: AppBar(
-              title: const Text("SC Meet"),
+              title: const Text("Online Exam Inspection Platform"),
               actions: _buildActions(),
               backgroundColor: secondaryColor,
             ),
@@ -340,16 +356,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   userName: meeting!.name,
                 ),
               ],
-            ),
-            bottomNavigationBar: ControlPanel(
-              onAudioToggle: onAudioToggle,
-              onVideoToggle: onVideoToggle,
-              videoEnabled: isVideoEnabled(),
-              audioEnabled: isAudioEnabled(),
-              isConnectionFailed: isConnectionFailed,
-              onReconnect: handleReconnect,
-              onChatToggle: handleChatToggle,
-              isChatOpen: isChatOpen,
             ),
           );
   }

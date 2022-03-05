@@ -23,8 +23,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
     return Scaffold(
       backgroundColor: backgColor,
-      body:
-          Responsive.isDesktop(context) ? desktopScreen(_size) : mobileScreen(_size),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.fill,
+            image: AssetImage('assets/background5.png'),
+          ),
+        ),
+        child: Responsive.isDesktop(context)
+            ? desktopScreen(_size)
+            : mobileScreen(_size),
+      ),
     );
   }
 
@@ -33,13 +42,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         CustomText(
-          fontSize: size.width / 25,
+          fontSize: size.width / 30,
           fontWeight: FontWeight.bold,
-          text: "Welcome to SC Meet",
-          color: Colors.white,
+          text: "Welcome to Online \nExam Inspection Platform",
+          color: fifthcolor,
         ),
         SizedBox(width: size.width / 10),
-        AuthenticationForm(emailController: emailController, passwordController: passwordController, nameController: nameController, surnameController: surnameController),
+        AuthenticationForm(
+            emailController: emailController,
+            passwordController: passwordController,
+            nameController: nameController,
+            surnameController: surnameController),
       ],
     );
   }
@@ -50,14 +63,18 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             CustomText(
+            CustomText(
               fontSize: size.width / 15,
               fontWeight: FontWeight.bold,
-              text: "Welcome to SC Meet",
+              text: "Welcome to Online \nExam Inspection Platform",
               color: Colors.white,
             ),
             //SizedBox(height: 10),
-            AuthenticationForm(emailController: emailController, passwordController: passwordController, nameController: nameController, surnameController: surnameController),
+            AuthenticationForm(
+                emailController: emailController,
+                passwordController: passwordController,
+                nameController: nameController,
+                surnameController: surnameController),
           ],
         ),
       ),

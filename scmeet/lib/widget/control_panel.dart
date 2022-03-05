@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scmeet/constants.dart';
 import 'package:scmeet/widget/custom_button.dart';
 
 class ControlPanel extends StatelessWidget {
@@ -25,6 +26,10 @@ class ControlPanel extends StatelessWidget {
   List<Widget> buildControls() {
     if (!isConnectionFailed) {
       return <Widget>[
+        const Image(
+          height: 50,
+         image: AssetImage('assets/logo2.png')
+        ),
         IconButton(
           onPressed: onVideoToggle,
           icon: Icon(videoEnabled ? Icons.videocam : Icons.videocam_off),
@@ -60,12 +65,12 @@ class ControlPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     var widgets = buildControls();
     return Container(
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: widgets,
       ),
-      color: Colors.blueGrey[700],
-      height: 60.0,
+      color: Color.fromARGB(255, 51, 84, 116),
+      height: MediaQuery.of(context).size.height,
     );
   }
 }

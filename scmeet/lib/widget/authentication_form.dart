@@ -41,7 +41,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
   Widget loginForm(Size size) {
     return Center(
       child: Container(
-        width: 400,
+        width: 300,
         height: 400,
         decoration: const BoxDecoration(
           color: Colors.transparent,
@@ -102,7 +102,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
   registerForm(Size size) {
     return Center(
       child: Container(
-        width: 400,
+        width: 300,
         height: 600,
         decoration: const BoxDecoration(
           color: Colors.transparent,

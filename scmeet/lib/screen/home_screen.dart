@@ -10,6 +10,7 @@ import 'package:scmeet/screen/meeting_screen.dart';
 import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/custom_text.dart';
 import 'package:scmeet/service/meeting_api.dart';
+import 'package:scmeet/widget/responsive.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -26,27 +27,60 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Size _size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: backgColor,
-      body: Column(
+      backgroundColor: fourthColor,
+      body: Stack(children: <Widget>[
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/background6.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CustomText(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                text: "WELCOME ${user.name} ${user.surname}\n",
+                color: Colors.white),
+            Responsive.isDesktop(context)
+                ? desktopScreen(_size)
+                : mobileScreen(_size),
+          ],
+        ),
+      ]),
+    );
+  }
+
+  desktopScreen(Size size) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
+            "Set up new exam room"),
+        const SizedBox(width: 30),
+        meetingCard(Icons.add, secondaryColor, "Join Exam Room",
+            "Join an existing exam room"),
+      ],
+    );
+  }
+
+  mobileScreen(Size size) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CustomText(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              text: "WELCOME ${user.name} ${user.surname}",
-              color: Colors.white),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              meetingCard(Icons.video_camera_back, thirdColor, "New Meeting",
-                  "Set up new meeting"),
-              const SizedBox(width: 30),
-              meetingCard(Icons.add, secondaryColor, "Join Meeting",
-                  "Join an existing meeting"),
-            ],
-          ),
+          meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
+              "Set up new exam room"),
+          const SizedBox(height: 30),
+          meetingCard(Icons.add, secondaryColor, "Join Exam Room",
+              "Join an existing exam room"),
         ],
       ),
     );
@@ -88,10 +122,10 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () {
         _displayTextInputDialog(
             context,
-            text == "New Meeting"
-                ? "Set a meeting name"
-                : "Type an existing meeting name",
-            text == "New Meeting" ? "Create Meeting" : "Join Meeting");
+            text == "New Exam Room"
+                ? "Set up new exam room"
+                : "Type an existing exam room ID",
+            text == "New Exam Room" ? "Create Meeting" : "Join Meeting");
         //showTextInputDialog(context: context, textFields: dialogFields, title: text == "New Meeting" ? "Set a meeting name" : "Type a meeting name");
       },
     );
@@ -119,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() {
                       meetingId = valueText;
                       Navigator.pop(context);
-                      if (title == "Set a meeting name") {
+                      if (title == "Set up new exam room") {
                         startMeetingFunction();
                       } else {
                         joinMeetingFunction();
