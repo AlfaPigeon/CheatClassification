@@ -11,6 +11,10 @@ class ControlPanel extends StatelessWidget {
   final VoidCallback onAudioToggle;
   final VoidCallback onReconnect;
   final VoidCallback onChatToggle;
+  final VoidCallback onLeave;
+  final VoidCallback select;
+  final VoidCallback end;
+  final VoidCallback host;
 
   const ControlPanel({Key? key, 
     required this.onAudioToggle,
@@ -21,6 +25,10 @@ class ControlPanel extends StatelessWidget {
     required this.isConnectionFailed,
     required this.onChatToggle,
     required this.isChatOpen,
+    required this.onLeave,
+    required this.select,
+    required this.end,
+    required this.host,
   }) : super(key: key);
 
   List<Widget> buildControls() {
@@ -49,6 +57,41 @@ class ControlPanel extends StatelessWidget {
           color: Colors.white,
           iconSize: 32.0,
         ),
+        IconButton(       
+          onPressed: select,
+          icon: const Icon(Icons.link_rounded), 
+          color: Colors.white,
+          iconSize: 32.0,
+        ),
+        
+        IconButton(
+          onPressed: onLeave,
+          icon: const Icon(Icons.meeting_room), 
+          color: Colors.white,
+          iconSize: 32.0,
+        ),
+
+        IconButton(
+          onPressed: end,
+          icon: const Icon(Icons.cancel_presentation), 
+          color: Color.fromARGB(255, 161, 34, 25),
+          iconSize: 32.0,
+        ),
+    //    if (host == true){
+     
+        //}
+
+        /*
+        if (isHost()) {
+      widgets.add(
+        CustomButton(
+          text: 'End',
+          onTap: onEnd,
+          width: MediaQuery.of(context).size.width / 4,
+        ),
+      );
+    }
+        */ 
       ];
     } else {
       return <Widget>[

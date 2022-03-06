@@ -64,7 +64,7 @@ class ChatScreen extends StatelessWidget {
           _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent),
     ); */
     return SizedBox(
-      width: 100.0,
+      width: 20.0,
       child: Column(
         children: <Widget>[
           Center(

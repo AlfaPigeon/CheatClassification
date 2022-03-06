@@ -214,13 +214,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
     return meeting != null ? meeting!.audioEnabled : false;
   }
 
-  void _select(PopUpChoice choice) async {
+  void _select() async {
     final meetingId = widget.meetingId;
     const snackBar = SnackBar(content: Text('Copied'));
     String text = '';
-    if (choice.id == PopUpChoiceEnum.CopyId) {
       text = meetingId;
-    } 
     await Clipboard.setData(ClipboardData(text: text));
     // ignore: deprecated_member_use
     scaffoldKey.currentState!.showSnackBar(snackBar);
@@ -254,11 +252,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   List<Widget> _buildActions() {
     var widgets = <Widget>[
-      CustomButton(
-        text: 'Leave',
-        onTap: onLeave,
-        width: MediaQuery.of(context).size.width / 4,
-      ),
+     /* GestureDetector(
+        onTap:() => onLeave ,
+        child: const Icon(Icons.meeting_room), 
+      ),*/ 
+
     ];
     if (isHost()) {
       widgets.add(
@@ -269,7 +267,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
         ),
       );
     }
-    widgets.add(PopupMenuButton<PopUpChoice>(
+    /* widgets.add(PopupMenuButton<PopUpChoice>(
       onSelected: _select,
       itemBuilder: (BuildContext context) {
         return choices.map((PopUpChoice choice) {
@@ -279,14 +277,22 @@ class _MeetingScreenState extends State<MeetingScreen> {
           );
         }).toList();
       },
-    ));
+    )); */
     return widgets;
   }
 
   Widget _buildMeetingRoom() {
-    return Row(
-      children: [
-         ControlPanel(
+    return Stack(
+      children: [ 
+        Container(
+         decoration: const BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.fill,
+            image: AssetImage('assets/background2.png'),
+          ),
+         ),
+        ),
+        ControlPanel(   
               onAudioToggle: onAudioToggle,
               onVideoToggle: onVideoToggle,
               videoEnabled: isVideoEnabled(),
@@ -295,7 +301,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
               onReconnect: handleReconnect,
               onChatToggle: handleChatToggle,
               isChatOpen: isChatOpen,
-            ),
+              onLeave: onLeave,
+              end: onEnd,
+              select: _select,
+              host: isHost,
+         ),
         Expanded(
           child: Stack(
             children: <Widget>[
@@ -308,7 +318,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                         'Waiting for participants to join the meeting',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.grey,
+                          color: Color.fromARGB(239, 207, 216, 220),
                           fontSize: 24.0,
                         ),
                       ),
@@ -338,11 +348,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
         ? const CircularProgressIndicator()
         : Scaffold(
             key: scaffoldKey,
-            appBar: AppBar(
+            /*nameMapappBar: AppBar(
               title: const Text("Online Exam Inspection Platform"),
-              actions: _buildActions(),
-              backgroundColor: secondaryColor,
-            ),
+              backgroundColor: fourthColor, /*actions: _buildActions(),*/ 
+            ),*/
             body: PageView(
               physics: const NeverScrollableScrollPhysics(),
               controller: pageController,
