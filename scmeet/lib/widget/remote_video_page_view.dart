@@ -42,7 +42,7 @@ class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
 
   List<Widget> _buildRemoteViewPages() {
     var widgets = <Widget>[];
-    for (int start = 0; start < widget.connections.length; start = start + 2) {
+    for (int start = 0; start < widget.connections.length; start = start + 1) {
       widgets.add(_buildRemoteViewPage(start));
     }
     return widgets;
