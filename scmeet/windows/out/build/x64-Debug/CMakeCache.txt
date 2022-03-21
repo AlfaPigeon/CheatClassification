@@ -89,7 +89,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=/INCREMENTAL:NO
 CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
 
 //Path to a program.
-CMAKE_MT:FILEPATH=CMAKE_MT-NOTFOUND
+CMAKE_MT:FILEPATH=C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/mt.exe
 
 //Value Computed by CMake
 CMAKE_PROJECT_DESCRIPTION:STATIC=
@@ -165,8 +165,8 @@ CMAKE_STATIC_LINKER_FLAGS_RELEASE:STRING=
 // during RELWITHDEBINFO builds.
 CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 
-//The CMake toolchain file
-CMAKE_TOOLCHAIN_FILE:FILEPATH=C:/Users/Gizem/vcpkg/scripts/buildsystems/vcpkg.cmake
+//No help, variable specified on the command line.
+CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=C:/Users/Gizem/vcpkg/scripts/buildsystems/vcpkg.cmake
 
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
@@ -208,11 +208,29 @@ X_VCPKG_APPLOCAL_DEPS_INSTALL:BOOL=OFF
 X_VCPKG_APPLOCAL_DEPS_SERIALIZED:BOOL=OFF
 
 //Path to a program.
+Z_VCPKG_BUILTIN_POWERSHELL_PATH:FILEPATH=C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe
+
+//Path to a program.
 Z_VCPKG_CL:FILEPATH=C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe
+
+//Path to a program.
+Z_VCPKG_PWSH_PATH:FILEPATH=Z_VCPKG_PWSH_PATH-NOTFOUND
 
 //The directory which contains the installed libraries for each
 // triplet
 _VCPKG_INSTALLED_DIR:PATH=C:/Users/Gizem/vcpkg/installed
+
+//Value Computed by CMake
+flutter_webrtc_BINARY_DIR:STATIC=C:/Users/Gizem/Desktop/Proje 496/CheatClassification/scmeet/windows/out/build/x64-Debug/plugins/flutter_webrtc
+
+//Value Computed by CMake
+flutter_webrtc_SOURCE_DIR:STATIC=C:/Users/Gizem/Desktop/Proje 496/CheatClassification/scmeet/windows/flutter/ephemeral/.plugin_symlinks/flutter_webrtc/windows
+
+//Value Computed by CMake
+runner_BINARY_DIR:STATIC=C:/Users/Gizem/Desktop/Proje 496/CheatClassification/scmeet/windows/out/build/x64-Debug/runner
+
+//Value Computed by CMake
+runner_SOURCE_DIR:STATIC=C:/Users/Gizem/Desktop/Proje 496/CheatClassification/scmeet/windows/runner
 
 //Value Computed by CMake
 scmeet_BINARY_DIR:STATIC=C:/Users/Gizem/Desktop/Proje 496/CheatClassification/scmeet/windows/out/build/x64-Debug
@@ -299,7 +317,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=1
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=4
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //noop for ranlib
@@ -357,6 +375,8 @@ VCPKG_MANIFEST_INSTALL:INTERNAL=OFF
 VCPKG_VERBOSE-ADVANCED:INTERNAL=1
 //Making sure VCPKG_MANIFEST_MODE doesn't change
 Z_VCPKG_CHECK_MANIFEST_MODE:INTERNAL=OFF
+//The path to the PowerShell implementation to use.
+Z_VCPKG_POWERSHELL_PATH:INTERNAL=C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe
 //Vcpkg root directory
 Z_VCPKG_ROOT_DIR:INTERNAL=C:/Users/Gizem/vcpkg
 
