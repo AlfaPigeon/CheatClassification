@@ -74,7 +74,7 @@ class ControlPanel extends StatelessWidget {
         IconButton(
           onPressed: end,
           icon: const Icon(Icons.cancel_presentation), 
-          color: Color.fromARGB(255, 161, 34, 25),
+          color: Color.fromARGB(255, 241, 56, 42),
           iconSize: 32.0,
         ),
     //    if (host == true){

@@ -7,6 +7,8 @@ import 'package:scmeet/webrtc/message_format.dart';
 import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/custom_text.dart';
 
+import '../constants.dart';
+
 typedef SendMessageCallback = void Function(String text);
 
 class ChatScreen extends StatelessWidget {
@@ -40,7 +42,8 @@ class ChatScreen extends StatelessWidget {
                 /*nameMap.containsKey(message.userId)
                     ? nameMap[message.userId]
                     : (message.userId == userId ? userName : '')*/,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold, color: fifthcolor),
+                
               ),
               subtitle: Text(
                 message.text,
@@ -63,55 +66,54 @@ class ChatScreen extends StatelessWidget {
       () =>
           _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent),
     ); */
-    return SizedBox(
-      width: 20.0,
-      child: Column(
-        children: <Widget>[
-          Center(
-            child: CustomText(
-              text: "Chat",
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: thirdColor,
-            ), 
-          ),
-          Expanded(
-            child: ListView(
-              controller: _scrollcontroller,
-              children: ListTile.divideTiles(
-                context: context,
-                tiles: _buildMessages(),
-              ).toList(),
+    return  Expanded (
+    child: Column(
+          children: <Widget>[
+            Center(
+              child: CustomText(
+                text: "Chat",
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: thirdColor,
+              ), 
             ),
-          ),
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextFormField(
-                    controller: textEditingController,
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ),
-                    decoration: const InputDecoration(
-                      hintStyle: TextStyle(
+            Expanded(
+              child: ListView(
+                controller: _scrollcontroller,
+                children: ListTile.divideTiles(
+                  context: context,
+                  tiles: _buildMessages(),
+                ).toList(),
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextFormField(
+                      controller: textEditingController,
+                      style: const TextStyle(
                         fontSize: 20,
+                      ),
+                      decoration: const InputDecoration(
+                        hintStyle: TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                CustomButton(
-                  text: 'Send',
-                  onTap: onSendClick,
-                  width: MediaQuery.of(context).size.width / 3,
-                ),
-              ],
+                  CustomButton(
+                    text: 'Send',
+                    onTap: onSendClick,
+                    width: MediaQuery.of(context).size.width / 3,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
     );
   }
 }
