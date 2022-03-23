@@ -14,7 +14,7 @@ import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/remote_video_page_view.dart';
 
 // ignore: constant_identifier_names
-enum PopUpChoiceEnum {CopyId }
+enum PopUpChoiceEnum { CopyId }
 
 class PopUpChoice {
   PopUpChoiceEnum id;
@@ -95,7 +95,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   void start() async {
-    userId = user.email;
+    userId = user.email.toString();
     MediaStream _localstream =
         await navigator.mediaDevices.getUserMedia(mediaConstraints);
 
@@ -219,7 +219,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     final meetingId = widget.meetingId;
     const snackBar = SnackBar(content: Text('Copied'));
     String text = '';
-      text = meetingId;
+    text = meetingId;
     await Clipboard.setData(ClipboardData(text: text));
     // ignore: deprecated_member_use
     scaffoldKey.currentState!.showSnackBar(snackBar);
@@ -253,11 +253,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   List<Widget> _buildActions() {
     var widgets = <Widget>[
-     /* GestureDetector(
+      /* GestureDetector(
         onTap:() => onLeave ,
         child: const Icon(Icons.meeting_room), 
-      ),*/ 
-
+      ),*/
     ];
     if (isHost()) {
       widgets.add(
@@ -283,55 +282,57 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   Widget _buildMeetingRoom() {
-    return Expanded(
+    return SafeArea(
       child: Row(
-
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: Stack(
-              children: [ 
-                Container(
-                 decoration: const BoxDecoration(
+          Stack(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width / 20 * 19,
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.fill,
                     image: AssetImage('assets/background2.png'),
                   ),
-                 ),
                 ),
-                Expanded(
-                  child: Stack(
-                    children: <Widget>[
-                      meeting!.connections.isNotEmpty
-                          ? RemoteVideoPageView(
-                              connections: meeting!.connections,
-                            )
-                          : const Center(
-                              child: Text(
-                                'Waiting for participants to join the meeting',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Color.fromARGB(239, 207, 216, 220),
-                                  fontSize: 24.0,
-                                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 20 * 19,
+                child: Stack(
+                  children: <Widget>[
+                    meeting!.connections.isNotEmpty
+                        ? RemoteVideoPageView(
+                            connections: meeting!.connections,
+                          )
+                        : const Center(
+                            child: Text(
+                              'Waiting for participants to join the meeting',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Color.fromARGB(239, 207, 216, 220),
+                                fontSize: 24.0,
                               ),
                             ),
-                      Positioned(
-                        bottom: 10.0,
-                        right: 0.0,
-                        child: SizedBox(
-                          width: 150.0,
-                          height: 200.0,
-                          child: RTCVideoView(
-                            _localRenderer,
-                            objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
                           ),
+                    Positioned(
+                      bottom: 10.0,
+                      right: 0.0,
+                      child: SizedBox(
+                        width: 150.0,
+                        height: 200.0,
+                        child: RTCVideoView(
+                          _localRenderer,
+                          objectFit:
+                              RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -348,31 +349,30 @@ class _MeetingScreenState extends State<MeetingScreen> {
               title: const Text("Online Exam Inspection Platform"),
               backgroundColor: fourthColor, /*actions: _buildActions(),*/ 
             ),*/
-            body: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children:  [
-                ControlPanel(   
-                    onAudioToggle: onAudioToggle,
-                    onVideoToggle: onVideoToggle,
-                    videoEnabled: isVideoEnabled(),
-                    audioEnabled: isAudioEnabled(),
-                    isConnectionFailed: isConnectionFailed,
-                    onReconnect: handleReconnect,
-                    onChatToggle: handleChatToggle,
-                    isChatOpen: isChatOpen,
-                    onLeave: onLeave,
-                    end: onEnd,
-                    select: _select,
-                    host: isHost,
-               ),
-            isChatOpen ?  ChatScreen(
-                  messages: messages,
-                  onSendMessage: handleSendMessage,
-                  connections: meeting!.connections,
-                  userId: meeting!.userId,
-                  userName: meeting!.name,
-                ) : _buildMeetingRoom(),
-              ]
-          ));
+            body: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ControlPanel(
+                onAudioToggle: onAudioToggle,
+                onVideoToggle: onVideoToggle,
+                videoEnabled: isVideoEnabled(),
+                audioEnabled: isAudioEnabled(),
+                isConnectionFailed: isConnectionFailed,
+                onReconnect: handleReconnect,
+                onChatToggle: handleChatToggle,
+                isChatOpen: isChatOpen,
+                onLeave: onLeave,
+                end: onEnd,
+                select: _select,
+                host: isHost,
+              ),
+              isChatOpen
+                  ? ChatScreen(
+                      messages: messages,
+                      onSendMessage: handleSendMessage,
+                      connections: meeting!.connections,
+                      userId: meeting!.userId,
+                      userName: meeting!.name,
+                    )
+                  : _buildMeetingRoom(),
+            ]));
   }
 }

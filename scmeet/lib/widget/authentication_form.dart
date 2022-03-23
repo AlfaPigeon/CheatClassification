@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:postgres/postgres.dart';
 import 'package:scmeet/constants.dart';
 import 'package:scmeet/controller/authentication_controller.dart';
 import 'package:scmeet/model/user.dart';
@@ -7,6 +10,7 @@ import 'package:scmeet/screen/home_screen.dart';
 import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/custom_text.dart';
 import 'package:scmeet/widget/custom_text_input.dart';
+import 'package:http/http.dart' as http;
 
 class AuthenticationForm extends StatefulWidget {
   final TextEditingController emailController;
@@ -28,6 +32,89 @@ class AuthenticationForm extends StatefulWidget {
 
 class _AuthenticationFormState extends State<AuthenticationForm> {
   final authController = Get.put(AuthenticationController());
+  bool isLoading = false;
+  User user = Get.find();
+
+  signIn() async {
+    setState(() {
+      isLoading = true;
+    });
+    var data;
+    PostgreSQLConnection connection;
+    await http.post(
+        Uri.parse(
+            "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAZfm-YeX--7DV2Ues9A6tR8ljtj5AGYNc"),
+        body: {
+          "email": widget.emailController.text,
+          "password": widget.passwordController.text,
+          "returnSecureToken": "true"
+        }).then((response) {
+      data = jsonDecode(response.body);
+    });
+    print("data ${data}");
+
+    if (data["localId"] != null) {
+      connection = PostgreSQLConnection(
+          "teamcheat.cd2rqpneggr5.us-east-1.rds.amazonaws.com",
+          5432,
+          "teamcheat_db",
+          username: "postgres",
+          password: "qwerty123",
+          timeoutInSeconds: 20);
+      await connection.open();
+      List<List<dynamic>> results = await connection.query(
+          "SELECT * FROM users WHERE id = '${data["localId"]}'");
+
+      print(results[0][1]);
+      user.setUserData(widget.emailController.text, results[0][1], results[0][2], data["localId"]); 
+      Get.to(const HomeScreen());
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  signUp() async {
+    PostgreSQLConnection connection;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    var data;
+    await http.post(
+        Uri.parse(
+            "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAZfm-YeX--7DV2Ues9A6tR8ljtj5AGYNc"),
+        body: {
+          "email": widget.emailController.text,
+          "password": widget.passwordController.text,
+          "returnSecureToken": "true"
+        }).then((response) {
+      data = jsonDecode(response.body);
+    });
+    print("data ${data}");
+
+    if (data["localId"] != null) {
+      connection = PostgreSQLConnection(
+          "teamcheat.cd2rqpneggr5.us-east-1.rds.amazonaws.com",
+          5432,
+          "teamcheat_db",
+          username: "postgres",
+          password: "qwerty123",
+          timeoutInSeconds: 20);
+      await connection.open();
+      List<List<dynamic>> results = await connection.query(
+          "INSERT INTO users(id,name,surname,email) VALUES ('${data["localId"]}', '${widget.nameController.text}', '${widget.surnameController.text}' , '${widget.emailController.text}')");
+      
+      user.setUserData(widget.emailController.text, widget.nameController.text, widget.surnameController.text, data["localId"]); 
+      Get.to(const HomeScreen());
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +158,8 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                       ? "Login"
                       : "Register",
                   onTap: () {
-                      //LOGIN
-                      Get.to(const HomeScreen());
-                    
+                    signIn();
+                    //Get.to(const HomeScreen());
                   },
                   width: MediaQuery.of(context).size.width / 1.2)),
               const SizedBox(height: 10),
@@ -149,8 +235,10 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                       ? "Login"
                       : "Register",
                   onTap: () {
-                      Get.put(User(email: widget.emailController.text, name: widget.nameController.text, surname: widget.surnameController.text));
-                      Get.to(const HomeScreen());
+                
+
+                    signUp();
+                    //Get.to(const HomeScreen());
                   },
                   width: MediaQuery.of(context).size.width / 1.2,
                 ),

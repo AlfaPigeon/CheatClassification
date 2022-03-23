@@ -1,14 +1,21 @@
 class User {
-  String email;
-  String name;
-  String surname;
-  //String uid;
+  String? email;
+  String? name;
+  String? surname;
+  String? id;
 
-  User({
-    required this.email,
-    required this.name,
-    required this.surname,
-  });
+  setUserData(String email, String name, String surname, String id) {
+    this.email = email;
+    this.name = name;
+    this.surname = surname;
+    this.id = id;
+
+    print(this.email);
+    print(this.name);
+    print(this.surname);
+    print(this.id);
+
+  }
 
 
 }
