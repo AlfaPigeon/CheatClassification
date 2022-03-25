@@ -290,16 +290,16 @@ class _MeetingScreenState extends State<MeetingScreen> {
           Stack(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width / 20 * 19,
+                width: MediaQuery.of(context).size.width / 20 * 19.333,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.fill,
-                    image: AssetImage('assets/background2.png'),
+                    image: AssetImage('assets/background12.png'),
                   ),
                 ),
               ),
               SizedBox(
-                width: MediaQuery.of(context).size.width / 20 * 19,
+                width: MediaQuery.of(context).size.width / 20 * 19.333,
                 child: Stack(
                   children: <Widget>[
                     meeting!.connections.isNotEmpty
@@ -342,7 +342,20 @@ class _MeetingScreenState extends State<MeetingScreen> {
   @override
   Widget build(BuildContext context) {
     return meeting == null
-        ? const CircularProgressIndicator()
+        ? Container(
+          color: secondaryColor,
+          child: const Center(
+            child: SizedBox( 
+              width: 200 , 
+              height: 200, 
+              child: CircularProgressIndicator(
+                strokeWidth: 15.0,
+                backgroundColor: Color.fromARGB(255, 51, 84, 116),
+                valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(235, 200, 163, 112))
+              )
+            )
+          ),    
+        )
         : Scaffold(
             key: scaffoldKey,
             /*nameMapappBar: AppBar(

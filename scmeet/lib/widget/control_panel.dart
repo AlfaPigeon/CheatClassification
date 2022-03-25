@@ -114,7 +114,7 @@ class ControlPanel extends StatelessWidget {
       ),
       color: Color.fromARGB(255, 51, 84, 116),
       height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width / 20,
+      width: MediaQuery.of(context).size.width / 30,
     );
   }
 }
