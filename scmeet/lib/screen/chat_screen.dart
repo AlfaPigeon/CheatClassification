@@ -42,12 +42,12 @@ class ChatScreen extends StatelessWidget {
                 /*nameMap.containsKey(message.userId)
                     ? nameMap[message.userId]
                     : (message.userId == userId ? userName : '')*/,
-                style: TextStyle(fontWeight: FontWeight.bold, color: fifthcolor),
+                style: TextStyle(fontWeight: FontWeight.bold, color: fifthcolor), // chatte email kismi
                 
               ),
               subtitle: Text(
                 message.text,
-                style: const TextStyle(fontSize: 24),
+                style: const TextStyle(fontSize: 24), //gonderilmis msj kismi
               ),
               isThreeLine: true,
             ))
@@ -74,7 +74,7 @@ class ChatScreen extends StatelessWidget {
                 text: "Chat",
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: thirdColor,
+                color: fifthcolor,
               ), 
             ),
             Expanded(
@@ -95,6 +95,7 @@ class ChatScreen extends StatelessWidget {
                     child: TextFormField(
                       controller: textEditingController,
                       style: const TextStyle(
+                        color: Color.fromARGB(255, 141, 40, 34),
                         fontSize: 20,
                       ),
                       decoration: const InputDecoration(
@@ -107,7 +108,7 @@ class ChatScreen extends StatelessWidget {
                   CustomButton(
                     text: 'Send',
                     onTap: onSendClick,
-                    width: MediaQuery.of(context).size.width / 3,
+                    width: MediaQuery.of(context).size.width / 5,
                   ),
                 ],
               ),
