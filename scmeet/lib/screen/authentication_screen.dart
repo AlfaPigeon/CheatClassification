@@ -21,7 +21,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
 
-  bool isLoading = false;
+  bool isLoading = false; 
   var connection;
 
   @override
@@ -29,7 +29,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     final Size _size = MediaQuery.of(context).size;
 
     return isLoading
-        ? const CircularProgressIndicator()
+        ? Container(
+          color: secondaryColor,
+          child: const Center(
+            child: SizedBox( 
+              width: 200 , 
+              height: 200, 
+              child: CircularProgressIndicator(
+                strokeWidth: 15.0,
+                backgroundColor: Color.fromARGB(255, 51, 84, 116),
+                valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(235, 200, 163, 112))
+              )
+            )
+          ),
+        )
         : Scaffold(
             backgroundColor: backgColor,
             body: Container(
