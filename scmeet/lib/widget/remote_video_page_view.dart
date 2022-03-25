@@ -40,36 +40,11 @@ class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
     });
 
     return Center(
-      child: OrientationBuilder(builder: (context, orientation) {
-        return orientation == Orientation.portrait
-            ? ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 50,
-                    //color: Colors.amber[colorCodes[index]],
-                    child: Center(child: widgets[index]),
-                  );
-                })
-            /* Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: widgets,
-              )*/
-            : buildBody(widgets);
-        /*Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: widgets,
-              );*/
-      }),
+      child: buildBody(widgets),
     );
   }
 
   Widget buildBody(var widgets) {
-    print("ceil => ${sqrt(widgets.length).ceil()}");
-    print(
-        "columns => ${(widgets.length / sqrt(widgets.length).ceil()).ceil()}");
-    print(widgets.length);
     List<Widget> rows = [];
     List<Widget> cols = [];
     var widgetCount = 0;

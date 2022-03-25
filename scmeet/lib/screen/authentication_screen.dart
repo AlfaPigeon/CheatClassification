@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:postgres/postgres.dart';
 import 'package:scmeet/constants.dart';
 import 'package:scmeet/widget/authentication_form.dart';
 import 'package:scmeet/widget/custom_text.dart';
@@ -44,8 +43,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           ),
         )
         : Scaffold(
-            backgroundColor: backgColor,
             body: Container(
+              width: double.infinity,
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.fill,

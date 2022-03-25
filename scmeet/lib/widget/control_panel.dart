@@ -35,47 +35,47 @@ class ControlPanel extends StatelessWidget {
     if (!isConnectionFailed) {
       return <Widget>[
         const Image(
-          height: 50,
+          height: 35,
          image: AssetImage('assets/logo2.png')
         ),
         IconButton(
           onPressed: onVideoToggle,
           icon: Icon(videoEnabled ? Icons.videocam : Icons.videocam_off),
           color: Colors.white,
-          iconSize: 32.0,
+          iconSize: 24.0,
         ),
         IconButton(
           onPressed: onAudioToggle,
           icon: Icon(audioEnabled ? Icons.mic : Icons.mic_off),
           color: Colors.white,
-          iconSize: 32.0,
+          iconSize: 24.0,
         ),
         IconButton(
           onPressed: onChatToggle,
           icon:
               Icon(isChatOpen ? Icons.speaker_notes_off : Icons.speaker_notes),
           color: Colors.white,
-          iconSize: 32.0,
+          iconSize: 24.0,
         ),
         IconButton(       
           onPressed: select,
           icon: const Icon(Icons.link_rounded), 
           color: Colors.white,
-          iconSize: 32.0,
+          iconSize: 24.0,
         ),
         
         IconButton(
           onPressed: onLeave,
           icon: const Icon(Icons.meeting_room), 
           color: Colors.white,
-          iconSize: 32.0,
+          iconSize: 24.0,
         ),
 
         IconButton(
           onPressed: end,
           icon: const Icon(Icons.cancel_presentation), 
           color: Color.fromARGB(255, 241, 56, 42),
-          iconSize: 32.0,
+          iconSize: 24.0,
         ),
     //    if (host == true){
      
@@ -114,7 +114,7 @@ class ControlPanel extends StatelessWidget {
       ),
       color: Color.fromARGB(255, 51, 84, 116),
       height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width / 30,
+      width: 45,
     );
   }
 }

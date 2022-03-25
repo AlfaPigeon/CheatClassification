@@ -90,28 +90,24 @@ class AnswerSdpData {
 
 class MeetingEndedData {
   String userId;
-  String name;
 
-  MeetingEndedData({required this.userId, required this.name});
+  MeetingEndedData({required this.userId});
 
   factory MeetingEndedData.fromJson(dynamic json) {
     return MeetingEndedData(
       userId: json['userId'],
-      name: json['name'],
     );
   }
 }
 
 class UserLeftData {
   String userId;
-  String name;
 
-  UserLeftData({required this.userId, required this.name});
+  UserLeftData({required this.userId});
 
   factory UserLeftData.fromJson(dynamic json) {
     return UserLeftData(
       userId: json['userId'],
-      name: json['name'],
     );
   }
 }

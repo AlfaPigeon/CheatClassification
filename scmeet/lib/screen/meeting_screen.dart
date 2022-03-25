@@ -290,7 +290,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
           Stack(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width / 30 * 29,
+                width: MediaQuery.of(context).size.width - 45,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.fill,
@@ -299,7 +299,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                 ),
               ),
               SizedBox(
-                width: MediaQuery.of(context).size.width / 30 * 29,
+                width: MediaQuery.of(context).size.width - 45,
                 child: Stack(
                   children: <Widget>[
                     meeting!.connections.isNotEmpty
@@ -308,7 +308,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                           )
                         : const Center(
                             child: Text(
-                              'Waiting for participants to join the meeting',
+                              '  Waiting for participants to join the meeting  ',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Color.fromARGB(239, 207, 216, 220),
@@ -316,12 +316,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
                               ),
                             ),
                           ),
-                    Positioned(
-                      bottom: 10.0,
-                      right: 0.0,
+                    Align(
+                      alignment: Alignment.bottomRight,
                       child: SizedBox(
-                        width: 150.0,
-                        height: 200.0,
+                        width: MediaQuery.of(context).size.width / 6,
+                        height: MediaQuery.of(context).size.height / 5,
                         child: RTCVideoView(
                           _localRenderer,
                           objectFit:
