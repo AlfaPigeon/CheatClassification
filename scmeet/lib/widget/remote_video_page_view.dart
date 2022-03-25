@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:scmeet/webrtc/connection.dart';
 import 'package:scmeet/widget/remote_connection.dart';
@@ -24,12 +26,17 @@ class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
         .forEach((connection) {
       print("connections name => ${connection.name}");
       print("connections name => ${connection.renderer}");
-      widgets.add(Container(
-        child: RemoteConnection(
-          renderer: connection.renderer,
-          connection: connection,
+      widgets.add(
+        Container(
+          //width: 600,
+          //height: 500,
+          child: RemoteConnection(
+            renderer: connection.renderer,
+            connection: connection,
+            length: length,
+          ),
         ),
-      ));
+      );
     });
 
     return Center(
@@ -44,26 +51,51 @@ class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
                     //color: Colors.amber[colorCodes[index]],
                     child: Center(child: widgets[index]),
                   );
-                }) 
-                /* Column(
+                })
+            /* Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: widgets,
               )*/
-            : ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 50,
-                    //color: Colors.amber[colorCodes[index]],
-                    child: Center(child: widgets[index]),
-                  );
-                });
-                /*Row(
+            : buildBody(widgets);
+        /*Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: widgets,
               );*/
       }),
+    );
+  }
+
+  Widget buildBody(var widgets) {
+    print("ceil => ${sqrt(widgets.length).ceil()}");
+    print(
+        "columns => ${(widgets.length / sqrt(widgets.length).ceil()).ceil()}");
+    print(widgets.length);
+    List<Widget> rows = [];
+    List<Widget> cols = [];
+    var widgetCount = 0;
+    for (int i = 0;
+        i < (widgets.length / sqrt(widgets.length).ceil()).ceil();
+        i++) {
+      for (int j = 0; j < sqrt(widgets.length).ceil(); j++) {
+        if (widgetCount < widgets.length) {
+          cols.add(widgets[widgetCount]);
+          print(widgetCount);
+          widgetCount++;
+        }
+      }
+      rows.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: cols,
+      ));
+
+      cols = [];
+    }
+
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: rows,
+      ),
     );
   }
 

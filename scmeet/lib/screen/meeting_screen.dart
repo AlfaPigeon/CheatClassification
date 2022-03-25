@@ -290,7 +290,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
           Stack(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width / 20 * 19,
+                width: MediaQuery.of(context).size.width / 30 * 29,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.fill,
@@ -299,7 +299,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                 ),
               ),
               SizedBox(
-                width: MediaQuery.of(context).size.width / 20 * 19,
+                width: MediaQuery.of(context).size.width / 30 * 29,
                 child: Stack(
                   children: <Widget>[
                     meeting!.connections.isNotEmpty
