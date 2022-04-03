@@ -292,6 +292,7 @@ class Meeting extends EventEmitter {
 
   stopStream() {
     if (stream != null) {
+      print("Stream disposed");
       stream?.dispose();
     }
   }

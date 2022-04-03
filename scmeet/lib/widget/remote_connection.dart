@@ -92,7 +92,7 @@ class _RemoteConnectionState extends State<RemoteConnection> {
                                 : Icons.mic_off,
                             color: Colors.white,
                             size: MediaQuery.of(context).size.width / 30,
-                          ),
+                          ),                   
                         ],
                       ),
                     ),

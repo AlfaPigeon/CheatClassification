@@ -79,6 +79,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
   @override
   deactivate() {
     super.deactivate();
+    _localRenderer.srcObject = null;
     _localRenderer.dispose();
     if (meeting != null) {
       meeting?.destroy();
@@ -123,6 +124,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
       });
     });
     meeting?.on('ended', null, (ev, ctx) {
+      _localstream.dispose();
       meetingEndedEvent();
     });
     meeting?.on('connection-setting-changed', null, (ev, ctx) {
@@ -159,6 +161,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   void meetingEndedEvent() {
     const snackBar = SnackBar(content: Text('Meeing Ended'));
+
     // ignore: deprecated_member_use
     scaffoldKey.currentState!.showSnackBar(snackBar);
     goToHome();
@@ -282,6 +285,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   Widget _buildMeetingRoom() {
+    getTracks();
     return SafeArea(
       child: Row(
         //crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,14 +322,19 @@ class _MeetingScreenState extends State<MeetingScreen> {
                           ),
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 6,
-                        height: MediaQuery.of(context).size.height / 5,
-                        child: RTCVideoView(
-                          _localRenderer,
-                          objectFit:
-                              RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
-                        ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 6,
+                            height: MediaQuery.of(context).size.height / 5,
+                            child: RTCVideoView(
+                              _localRenderer,
+                              objectFit: RTCVideoViewObjectFit
+                                  .RTCVideoViewObjectFitContain,
+                            ),
+                          ),
+                          //Text(getTracks(), style: TextStyle(color: Colors.white),),
+                        ],
                       ),
                     )
                   ],
@@ -338,23 +347,34 @@ class _MeetingScreenState extends State<MeetingScreen> {
     );
   }
 
+  getTracks() {
+    String tr = "";
+
+    meeting?.stream!.getVideoTracks().map((track) {
+      print(" track =>  ${track.captureFrame()}");
+      setState(() {
+        tr = track.captureFrame().toString();
+      });
+    });
+
+    return tr;
+  }
+
   @override
   Widget build(BuildContext context) {
     return meeting == null
         ? Container(
-          color: secondaryColor,
-          child: const Center(
-            child: SizedBox( 
-              width: 200 , 
-              height: 200, 
-              child: CircularProgressIndicator(
-                strokeWidth: 15.0,
-                backgroundColor: Color.fromARGB(255, 51, 84, 116),
-                valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(235, 200, 163, 112))
-              )
-            )
-          ),    
-        )
+            color: secondaryColor,
+            child: const Center(
+                child: SizedBox(
+                    width: 200,
+                    height: 200,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 15.0,
+                        backgroundColor: Color.fromARGB(255, 51, 84, 116),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Color.fromARGB(235, 200, 163, 112))))),
+          )
         : Scaffold(
             key: scaffoldKey,
             /*nameMapappBar: AppBar(

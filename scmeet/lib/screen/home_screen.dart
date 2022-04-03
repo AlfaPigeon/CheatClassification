@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:scmeet/constants.dart';
 import 'package:scmeet/model/meeting_detail.dart';
 import 'package:scmeet/model/user.dart';
+import 'package:scmeet/screen/authentication_screen.dart';
 import 'package:scmeet/screen/meeting_screen.dart';
 import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/custom_text.dart';
@@ -49,11 +50,20 @@ class _HomeScreenState extends State<HomeScreen> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomText(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                text: "WELCOME ${user.name} ${user.surname}\n",
-                color: Colors.white),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomText(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    text: "WELCOME ${user.name} ${user.surname}\n",
+                    color: Colors.white),
+                    const SizedBox(width: 50),
+                    CustomButton(text: "Log Out", onTap: () {
+                      Get.off(const AuthenticationScreen());
+                    }, width: MediaQuery.of(context).size.width / 10)
+              ],
+            ),
             Responsive.isDesktop(context)
                 ? desktopScreen(_size)
                 : mobileScreen(_size),
