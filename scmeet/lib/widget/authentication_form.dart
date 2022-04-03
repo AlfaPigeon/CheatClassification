@@ -55,11 +55,11 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
 
     if (data["localId"] != null) {
       connection = PostgreSQLConnection(
-          "teamcheat.cd2rqpneggr5.us-east-1.rds.amazonaws.com",
+          "manny.db.elephantsql.com",
           5432,
-          "teamcheat_db",
-          username: "postgres",
-          password: "qwerty123",
+          "yudejpbv",
+          username: "yudejpbv",
+          password: "8gCcTUmsAZsaYCO4igdMjHJtYaFyrBSK",
           timeoutInSeconds: 20);
       await connection.open();
       List<List<dynamic>> results = await connection.query(
@@ -68,6 +68,10 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
       print(results[0][1]);
       user.setUserData(widget.emailController.text, results[0][1], results[0][2], data["localId"]); 
       Get.to(const HomeScreen());
+    } else {
+      Get.defaultDialog(
+            title: data["error"]["message"],
+            middleText: "Please enter valid credientials");
     }
 
     setState(() {
@@ -97,11 +101,11 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
 
     if (data["localId"] != null) {
       connection = PostgreSQLConnection(
-          "teamcheat.cd2rqpneggr5.us-east-1.rds.amazonaws.com",
+          "manny.db.elephantsql.com",
           5432,
-          "teamcheat_db",
-          username: "postgres",
-          password: "qwerty123",
+          "yudejpbv",
+          username: "yudejpbv",
+          password: "8gCcTUmsAZsaYCO4igdMjHJtYaFyrBSK",
           timeoutInSeconds: 20);
       await connection.open();
       List<List<dynamic>> results = await connection.query(
@@ -109,6 +113,10 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
       
       user.setUserData(widget.emailController.text, widget.nameController.text, widget.surnameController.text, data["localId"]); 
       Get.to(const HomeScreen());
+    } else {
+      Get.defaultDialog(
+            title: data["error"]["message"],
+            middleText: "Please enter valid credientials");
     }
 
     setState(() {
