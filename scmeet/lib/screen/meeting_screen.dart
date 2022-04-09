@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -12,6 +15,7 @@ import 'package:scmeet/webrtc/message_format.dart';
 import 'package:scmeet/widget/control_panel.dart';
 import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/remote_video_page_view.dart';
+import 'package:http/http.dart' as http;
 
 // ignore: constant_identifier_names
 enum PopUpChoiceEnum { CopyId }
@@ -68,12 +72,26 @@ class _MeetingScreenState extends State<MeetingScreen> {
   List<MessageFormat> messages = [];
   final PageController pageController = PageController();
   User user = getx.Get.find();
+  Timer? timer;
 
   @override
   void initState() {
     super.initState();
     initRenderers();
     start();
+    if(user.isHost == "1") {
+          timer = Timer.periodic(const Duration(seconds: 10), (Timer t) => getObjectDetectionResults());
+          print("timer set");
+    }
+  }
+
+  void getObjectDetectionResults() async {
+    var sqldata;
+          await http.get(Uri.parse("http://kemalbayik.com/read_od_outputs.php")).then((response) {
+            sqldata = jsonDecode(response.body);
+          });
+
+          print("signup data $sqldata");
   }
 
   @override
