@@ -3,17 +3,23 @@ class User {
   String? name;
   String? surname;
   String? id;
+  String? isHost; // 0 false 1 true
+  String? company;
 
-  setUserData(String email, String name, String surname, String id) {
+  setUserData(String email, String name, String surname, String id, String isHost, String company) {
     this.email = email;
     this.name = name;
     this.surname = surname;
     this.id = id;
+    this.isHost = isHost;
+    this.company = company;
 
     print(this.email);
     print(this.name);
     print(this.surname);
     print(this.id);
+    print(this.isHost);
+    print(this.company);
 
   }
 

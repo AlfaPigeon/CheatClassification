@@ -50,6 +50,12 @@ class _HomeScreenState extends State<HomeScreen> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            user.isHost == "1" ? CustomText(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    text: user.company.toString(),
+                    color: Colors.white) : const Text(""),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -78,10 +84,10 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
-            "Set up new exam room"),
+        user.isHost == "1" ? meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
+            "Set up new exam room") : const SizedBox(),
         const SizedBox(width: 30),
-        meetingCard(Icons.add, secondaryColor, "Join Exam Room",
+         meetingCard(Icons.add, secondaryColor, "Join Exam Room",
             "Join an existing exam room"),
       ],
     );
@@ -93,8 +99,8 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
-              "Set up new exam room"),
+          user.isHost == "1" ? meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
+              "Set up new exam room"): const SizedBox(),
           const SizedBox(height: 30),
           meetingCard(Icons.add, secondaryColor, "Join Exam Room",
               "Join an existing exam room"),

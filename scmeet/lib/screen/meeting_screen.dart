@@ -92,7 +92,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   void goToHome() {
-    getx.Get.to(const HomeScreen());
+    getx.Get.off(const HomeScreen());
   }
 
   void start() async {
@@ -173,6 +173,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   void onEnd() {
     if (meeting != null) {
+      meeting?.leave();
       meeting?.end();
       meeting = null;
       goToHome();

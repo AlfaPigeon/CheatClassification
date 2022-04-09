@@ -19,6 +19,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
+  TextEditingController hostKeyController = TextEditingController();
 
   bool isLoading = false; 
   var connection;
@@ -73,7 +74,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             emailController: emailController,
             passwordController: passwordController,
             nameController: nameController,
-            surnameController: surnameController),
+            surnameController: surnameController,
+            hostKeyController: hostKeyController,),
       ],
     );
   }
@@ -95,7 +97,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 emailController: emailController,
                 passwordController: passwordController,
                 nameController: nameController,
-                surnameController: surnameController),
+                surnameController: surnameController,
+                hostKeyController: hostKeyController,),
           ],
         ),
       ),
