@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:scmeet/constants.dart';
+import 'package:scmeet/model/user.dart';
 import 'package:scmeet/widget/custom_button.dart';
 
 class ControlPanel extends StatelessWidget {
@@ -32,6 +34,7 @@ class ControlPanel extends StatelessWidget {
   }) : super(key: key);
 
   List<Widget> buildControls() {
+    User user = Get.find();
     if (!isConnectionFailed) {
       return <Widget>[
         const Image(
@@ -71,12 +74,12 @@ class ControlPanel extends StatelessWidget {
           iconSize: 24.0,
         ),
 
-        IconButton(
+        user.isHost == "1" ? IconButton(
           onPressed: end,
           icon: const Icon(Icons.cancel_presentation), 
           color: Color.fromARGB(255, 241, 56, 42),
           iconSize: 24.0,
-        ),
+        ) : const SizedBox(),
     //    if (host == true){
      
         //}

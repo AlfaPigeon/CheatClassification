@@ -17,13 +17,15 @@ class AuthenticationForm extends StatefulWidget {
   final TextEditingController passwordController;
   final TextEditingController nameController;
   final TextEditingController surnameController;
+  final TextEditingController hostKeyController;
 
   const AuthenticationForm(
       {Key? key,
       required this.emailController,
       required this.passwordController,
       required this.nameController,
-      required this.surnameController})
+      required this.surnameController,
+      required this.hostKeyController})
       : super(key: key);
 
   @override
@@ -33,6 +35,8 @@ class AuthenticationForm extends StatefulWidget {
 class _AuthenticationFormState extends State<AuthenticationForm> {
   final authController = Get.put(AuthenticationController());
   bool isLoading = false;
+  bool? isHost = false;
+  String isHostString = "0"; //DEFAULT STUDENT INDEX IN HOST_KEYS TABLE
   User user = Get.find();
 
   signIn() async {
@@ -54,24 +58,46 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
     print("data ${data}");
 
     if (data["localId"] != null) {
-      connection = PostgreSQLConnection(
-          "manny.db.elephantsql.com",
-          5432,
-          "yudejpbv",
+      var sqldata;
+      await http.post(Uri.parse("http://kemalbayik.com/signin.php"), body: {
+        "id": data["localId"],
+      }).then((response) {
+        sqldata = jsonDecode(response.body);
+      });
+      print("signin data ${data["user_uid"]}");
+      user.setUserData(
+          widget.emailController.text,
+          sqldata["name"],
+          sqldata["surname"],
+          data["localId"],
+          sqldata["is_host"],
+          sqldata["company"]);
+      Get.off(const HomeScreen());
+
+      /*connection = PostgreSQLConnection(
+          "manny.db.elephantsql.com", 5432, "yudejpbv",
           username: "yudejpbv",
           password: "8gCcTUmsAZsaYCO4igdMjHJtYaFyrBSK",
           timeoutInSeconds: 20);
       await connection.open();
-      List<List<dynamic>> results = await connection.query(
-          "SELECT * FROM users WHERE id = '${data["localId"]}'");
+      List<List<dynamic>> results = await connection
+          .query("SELECT * FROM users WHERE id = '${data["localId"]}'");
+
+      List<List<dynamic>> keyResult = await connection
+          .query("SELECT * FROM HOST_KEYS WHERE host_id = '${results[0][5]}'");
+
+      print(keyResult);
+      String company = keyResult[0][1];
 
       print(results[0][1]);
-      user.setUserData(widget.emailController.text, results[0][1], results[0][2], data["localId"]); 
-      Get.to(const HomeScreen());
+      user.setUserData(widget.emailController.text, results[0][1],
+          results[0][2], data["localId"], results[0][4], company);
+      await connection.close();
+      Get.to(const HomeScreen());*/
     } else {
       Get.defaultDialog(
-            title: data["error"]["message"],
-            middleText: "Please enter valid credientials");
+          title: data["error"]["message"],
+          middleText: "Please enter valid credientials");
     }
 
     setState(() {
@@ -80,43 +106,106 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
   }
 
   signUp() async {
-    PostgreSQLConnection connection;
-
     setState(() {
       isLoading = true;
     });
 
-    var data;
-    await http.post(
-        Uri.parse(
-            "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAZfm-YeX--7DV2Ues9A6tR8ljtj5AGYNc"),
-        body: {
-          "email": widget.emailController.text,
-          "password": widget.passwordController.text,
-          "returnSecureToken": "true"
-        }).then((response) {
-      data = jsonDecode(response.body);
-    });
-    print("data ${data}");
+    if (isHost!) {
+      var keydata;
+      await http
+          .post(Uri.parse("http://kemalbayik.com/host_key_check.php"), body: {
+        "host_key": widget.hostKeyController.text,
+      }).then((response) {
+        keydata = jsonDecode(response.body);
+      });
+      print(keydata);
+      if (!keydata["error"]) {
+        var data;
+        await http.post(
+            Uri.parse(
+                "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAZfm-YeX--7DV2Ues9A6tR8ljtj5AGYNc"),
+            body: {
+              "email": widget.emailController.text,
+              "password": widget.passwordController.text,
+              "returnSecureToken": "true"
+            }).then((response) {
+          data = jsonDecode(response.body);
+        });
+        print("data ${data}");
 
-    if (data["localId"] != null) {
-      connection = PostgreSQLConnection(
-          "manny.db.elephantsql.com",
-          5432,
-          "yudejpbv",
-          username: "yudejpbv",
-          password: "8gCcTUmsAZsaYCO4igdMjHJtYaFyrBSK",
-          timeoutInSeconds: 20);
-      await connection.open();
-      List<List<dynamic>> results = await connection.query(
-          "INSERT INTO users(id,name,surname,email) VALUES ('${data["localId"]}', '${widget.nameController.text}', '${widget.surnameController.text}' , '${widget.emailController.text}')");
-      
-      user.setUserData(widget.emailController.text, widget.nameController.text, widget.surnameController.text, data["localId"]); 
-      Get.to(const HomeScreen());
+        if (data["localId"] != null) {
+          var sqldata;
+          await http.post(Uri.parse("http://kemalbayik.com/signup.php"), body: {
+            "host_key": widget.hostKeyController.text,
+            "id": data["localId"],
+            "name": widget.nameController.text,
+            "surname": widget.surnameController.text,
+            "email": widget.emailController.text,
+            "is_host": isHostString
+          }).then((response) {
+            sqldata = jsonDecode(response.body);
+          });
+
+          print("signup data $sqldata");
+          user.setUserData(
+              widget.emailController.text,
+              widget.nameController.text,
+              widget.surnameController.text,
+              data["localId"],
+              isHostString,
+              sqldata["company"]);
+          Get.to(const HomeScreen());
+        } else {
+          Get.defaultDialog(
+              title: data["error"]["message"],
+              middleText: "Please enter valid credientials");
+        }
+      } else {
+        Get.defaultDialog(
+            title: keydata["message"],
+            middleText: "Please enter valid credientials");
+      }
     } else {
-      Get.defaultDialog(
+      var data;
+      await http.post(
+          Uri.parse(
+              "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAZfm-YeX--7DV2Ues9A6tR8ljtj5AGYNc"),
+          body: {
+            "email": widget.emailController.text,
+            "password": widget.passwordController.text,
+            "returnSecureToken": "true"
+          }).then((response) {
+        data = jsonDecode(response.body);
+      });
+      print("data ${data}");
+
+      if (data["localId"] != null) {
+        var sqldata;
+        await http.post(Uri.parse("http://kemalbayik.com/signup.php"), body: {
+          "host_key": widget.hostKeyController.text,
+          "id": data["localId"],
+          "name": widget.nameController.text,
+          "surname": widget.surnameController.text,
+          "email": widget.emailController.text,
+          "is_host": isHostString
+        }).then((response) {
+          sqldata = jsonDecode(response.body);
+        });
+
+        print("signup data ${sqldata["user_uid"]}");
+        user.setUserData(
+            widget.emailController.text,
+            widget.nameController.text,
+            widget.surnameController.text,
+            data["localId"],
+            isHostString,
+            sqldata["company"]);
+        Get.to(const HomeScreen());
+      } else {
+        Get.defaultDialog(
             title: data["error"]["message"],
             middleText: "Please enter valid credientials");
+      }
     }
 
     setState(() {
@@ -237,14 +326,52 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                 hint: "Type your surname",
               ),
               const SizedBox(height: 20),
+              isHost!
+                  ? CustomTextInput(
+                      controller: widget.hostKeyController,
+                      icon: Icons.key_outlined,
+                      obscure: false,
+                      type: TextInputType.text,
+                      hint: "Type your host key",
+                    )
+                  : const SizedBox(),
+              SizedBox(height: isHost! ? 20 : 0),
+              Row(
+                children: <Widget>[
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const CustomText(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      text: "I am host",
+                      color: Colors.white),
+                  Checkbox(
+                    checkColor: thirdColor,
+                    activeColor: secondaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(2.0),
+                    ),
+                    side: MaterialStateBorderSide.resolveWith(
+                      (states) => BorderSide(width: 2.0, color: Colors.white),
+                    ),
+                    value: isHost,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isHost = value;
+                        isHost! ? isHostString = "1" : isHostString = "0";
+                      });
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
               Obx(
                 () => CustomButton(
                   text: authController.authenticationFormState.value
                       ? "Login"
                       : "Register",
                   onTap: () {
-                
-
                     signUp();
                     //Get.to(const HomeScreen());
                   },
