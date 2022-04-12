@@ -12,6 +12,7 @@ import 'package:scmeet/screen/chat_screen.dart';
 import 'package:scmeet/screen/home_screen.dart';
 import 'package:scmeet/webrtc/meeting.dart';
 import 'package:scmeet/webrtc/message_format.dart';
+import 'package:scmeet/webrtc/python_connection.dart';
 import 'package:scmeet/widget/control_panel.dart';
 import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/remote_video_page_view.dart';
@@ -73,6 +74,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
   final PageController pageController = PageController();
   User user = getx.Get.find();
   Timer? timer;
+  Map<String,int>? objDetResults = Map();
 
   @override
   void initState() {
@@ -92,6 +94,16 @@ class _MeetingScreenState extends State<MeetingScreen> {
           });
 
           print("signup data $sqldata");
+          for(int i = 0; i < sqldata["user_id"].length; i++) {
+            if(objDetResults!.containsKey(sqldata["user_id"][i])) {
+                objDetResults!.update(sqldata["user_id"][i],(value) =>int.parse(sqldata["percentage"][i]));
+            } else {
+              objDetResults!.putIfAbsent(sqldata["user_id"][i], () => int.parse(sqldata["percentage"][i]));
+            }
+          }
+
+          print(objDetResults!.keys);
+          print(objDetResults!.values);
   }
 
   @override
@@ -99,6 +111,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     super.deactivate();
     _localRenderer.srcObject = null;
     _localRenderer.dispose();
+    timer!.cancel();
     if (meeting != null) {
       meeting?.destroy();
       meeting = null;
@@ -117,6 +130,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
     userId = user.email.toString();
     MediaStream _localstream =
         await navigator.mediaDevices.getUserMedia(mediaConstraints);
+    
+    PythonConnection(localStream: _localstream).start();
 
     _localRenderer.srcObject = _localstream;
     //_localRenderer = RTCVideoViewObjectFit.RTCVideoViewObjectFitContain as RTCVideoRenderer;
