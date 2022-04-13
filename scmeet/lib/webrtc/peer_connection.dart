@@ -45,7 +45,6 @@ class PeerConnection extends EventEmitter {
   };
 
   Future<void> start() async {
-    print("startt");
     rtcPeerConnection =
         await createPeerConnection(configuration, loopbackConstraints);
     localStream?.getTracks().forEach((track) {
@@ -56,10 +55,6 @@ class PeerConnection extends EventEmitter {
     rtcPeerConnection!.onRemoveStream = _onRemoveStream;
     rtcPeerConnection!.onRenegotiationNeeded = _onRenegotiationNeeded;
     rtcPeerConnection!.onIceCandidate = _onIceCandidate;
-    if(connectionCount == 0) {
-     // _makeCall();
-      connectionCount++;
-    }
     await renderer.initialize();
     emit('connected');
   }
@@ -132,119 +127,5 @@ class PeerConnection extends EventEmitter {
     renderer.dispose();
     localStream = null;
     remoteStream = null;
-  }
-
-  Future<void> _negotiateRemoteConnection() async {
-    return pythonConnection!
-        .createOffer()
-        .then((offer) {
-          return pythonConnection!.setLocalDescription(offer);
-        })
-        .then(_waitForGatheringComplete)
-        .then((_) async {
-          var des = await pythonConnection!.getLocalDescription();
-          var headers = {
-            'Content-Type': 'application/json',
-          };
-          var request = http.Request(
-            'POST',
-            Uri.parse(
-                'https://pythonserver888.herokuapp.com/offer'), // CHANGE URL HERE TO LOCAL SERVER
-          );
-          request.body = json.encode(
-            {
-              "sdp": des!.sdp,
-              "type": des.type,
-              "video_transform": "edges",
-              "id": user.id.toString()
-            },
-          );
-          request.headers.addAll(headers);
-
-          http.StreamedResponse response = await request.send();
-
-          String data = "";
-          print("response eee => ${response.statusCode}");
-          if (response.statusCode == 200) {
-            data = await response.stream.bytesToString();
-            var dataMap = json.decode(data);
-            print(" data mappp ===> $data");
-            await pythonConnection!.setRemoteDescription(
-              RTCSessionDescription(
-                dataMap["sdp"],
-                dataMap["type"],
-              ),
-            );
-          } else {
-            print(response.reasonPhrase);
-          }
-        });
-  }
-
-  Future<bool> _waitForGatheringComplete(_) async {
-    print("WAITING FOR GATHERING COMPLETE");
-    if (pythonConnection!.iceGatheringState ==
-        RTCIceGatheringState.RTCIceGatheringStateComplete) {
-      return true;
-    } else {
-      await Future.delayed(Duration(seconds: 1));
-      return await _waitForGatheringComplete(_);
-    }
-  }
-
-  Future<void> _makeCall() async {
-    var configuration = <String, dynamic>{
-      'sdpSemantics': 'unified-plan',
-    };
-
-    //* Create Peer Connection
-    if (pythonConnection != null) return;
-    pythonConnection = await createPeerConnection(
-      configuration,
-    );
-
-    //pythonConnection!.onTrack = _onTrack;
-    // _peerConnection!.onAddTrack = _onAddTrack;
-
-    //* Create Data Channel
-    /*_dataChannelDict = RTCDataChannelInit();
-    _dataChannelDict!.ordered = true;
-    _dataChannel = await pythonConnection!.createDataChannel(
-      "chat",
-      _dataChannelDict!,
-    );
-    _dataChannel!.onDataChannelState = _onDataChannelState;*/
-    // _dataChannel!.onMessage = _onDataChannelMessage;
-
-    final mediaConstraints = <String, dynamic>{
-      'audio': false,
-      'video': {
-        'mandatory': {
-          'minWidth':
-              '500', // Provide your own width, height and frame rate here
-          'minHeight': '500',
-          'minFrameRate': '30',
-        },
-        // 'facingMode': 'user',
-        'facingMode': 'environment',
-        'optional': [],
-      }
-    };
-
-    try {
-      //var stream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
-      // _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
-      //localStream = stream;
-      // _localRenderer.srcObject = _localStream;
-
-      localStream?.getTracks().forEach((element) {
-        pythonConnection!.addTrack(element, localStream!);
-      });
-
-      print("NEGOTIATE");
-      await _negotiateRemoteConnection();
-    } catch (e) {
-      print(e.toString());
-    }
   }
 }

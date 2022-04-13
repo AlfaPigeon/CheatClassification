@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scmeet/controller/meeting_controller.dart';
 import 'package:scmeet/model/user.dart';
 import 'package:scmeet/screen/authentication_screen.dart';
 
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(User());
+    Get.put(MeetingController(), permanent: true);
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: AuthenticationScreen(),

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart' as getx;
 import 'package:scmeet/constants.dart';
+import 'package:scmeet/controller/meeting_controller.dart';
 import 'package:scmeet/model/meeting_detail.dart';
 import 'package:scmeet/model/user.dart';
 import 'package:scmeet/screen/chat_screen.dart';
@@ -54,6 +55,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
   final _localRenderer = RTCVideoRenderer();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  MeetingController meetingController = getx.Get.find();
+
   final Map<String, dynamic> mediaConstraints = {
     "audio": true,
     "video": {
@@ -74,36 +77,54 @@ class _MeetingScreenState extends State<MeetingScreen> {
   final PageController pageController = PageController();
   User user = getx.Get.find();
   Timer? timer;
-  Map<String,int>? objDetResults = Map();
+  Timer? pythonTimer;
+  // ignore: prefer_collection_literals
+  Map<String, int>? objDetResults = Map();
+  MediaStream? pythonLocalStream;
 
   @override
   void initState() {
     super.initState();
     initRenderers();
     start();
-    if(user.isHost == "1") {
-          timer = Timer.periodic(const Duration(seconds: 10), (Timer t) => getObjectDetectionResults());
-          print("timer set");
+    if (user.isHost == "1") {
+      timer = Timer.periodic(const Duration(seconds: 10),
+          (Timer t) => getObjectDetectionResults());
+      print("timer set");
+    }
+    if (user.isHost == "0") {
+      pythonTimer = Timer(
+          const Duration(seconds: 10),
+          () => connectToPython(
+              pythonLocalStream, meetingController.connectionLength));
     }
   }
 
   void getObjectDetectionResults() async {
     var sqldata;
-          await http.get(Uri.parse("http://kemalbayik.com/read_od_outputs.php")).then((response) {
-            sqldata = jsonDecode(response.body);
-          });
+    await http
+        .get(Uri.parse("http://kemalbayik.com/read_od_outputs.php"))
+        .then((response) {
+      sqldata = jsonDecode(response.body);
+    });
 
-          print("signup data $sqldata");
-          for(int i = 0; i < sqldata["user_id"].length; i++) {
-            if(objDetResults!.containsKey(sqldata["user_id"][i])) {
-                objDetResults!.update(sqldata["user_id"][i],(value) =>int.parse(sqldata["percentage"][i]));
-            } else {
-              objDetResults!.putIfAbsent(sqldata["user_id"][i], () => int.parse(sqldata["percentage"][i]));
-            }
-          }
+    print("sqldata data $sqldata");
+    for (int i = 0; i < sqldata["user_id"].length; i++) {
+      if (objDetResults!.containsKey(sqldata["user_id"][i])) {
+        print("UPDATEEE");
+        objDetResults!.update(sqldata["user_id"][i],
+            (value) => int.parse(sqldata["percentage"][i]));
+      } else {
+        objDetResults!.putIfAbsent(
+            sqldata["user_id"][i], () => int.parse(sqldata["percentage"][i]));
+      }
+    }
+    print("oBJ DET  resultss =>${objDetResults}");
+    meetingController.updateOdResults(objDetResults!);
+    print("od resultss =>${meetingController.odResults}");
 
-          print(objDetResults!.keys);
-          print(objDetResults!.values);
+    print(objDetResults!.keys);
+    print(objDetResults!.values);
   }
 
   @override
@@ -112,6 +133,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     _localRenderer.srcObject = null;
     _localRenderer.dispose();
     timer!.cancel();
+    pythonTimer!.cancel();
     if (meeting != null) {
       meeting?.destroy();
       meeting = null;
@@ -130,8 +152,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
     userId = user.email.toString();
     MediaStream _localstream =
         await navigator.mediaDevices.getUserMedia(mediaConstraints);
-    
-    PythonConnection(localStream: _localstream).start();
 
     _localRenderer.srcObject = _localstream;
     //_localRenderer = RTCVideoViewObjectFit.RTCVideoViewObjectFitContain as RTCVideoRenderer;
@@ -141,6 +161,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
       userId: userId,
       name: widget.name,
     );
+
+    print(
+        "meeting connection length ============> ${meeting!.connections.length}");
+    setState(() {
+      pythonLocalStream = _localstream;
+    });
     meeting?.on('open', null, (ev, context) {
       setState(() {
         isConnectionFailed = false;
@@ -198,6 +224,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
     // ignore: deprecated_member_use
     scaffoldKey.currentState!.showSnackBar(snackBar);
     goToHome();
+  }
+
+  connectToPython(var _localstream, var length) {
+    PythonConnection(localStream: _localstream, connectionLength: length)
+        .start();
   }
 
   void exitClick() {
@@ -336,13 +367,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   ),
                 ),
               ),
-              SizedBox(
+              user.isHost == "1" ? SizedBox(
                 width: MediaQuery.of(context).size.width - 45,
                 child: Stack(
                   children: <Widget>[
                     meeting!.connections.isNotEmpty
                         ? RemoteVideoPageView(
                             connections: meeting!.connections,
+                            odResults: objDetResults
                           )
                         : const Center(
                             child: Text(
@@ -373,7 +405,23 @@ class _MeetingScreenState extends State<MeetingScreen> {
                     )
                   ],
                 ),
-              ),
+              ) : Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.05,
+                            height: MediaQuery.of(context).size.height / 1.1,
+                            child: RTCVideoView(
+                              _localRenderer,
+                              objectFit: RTCVideoViewObjectFit
+                                  .RTCVideoViewObjectFitContain,
+                            ),
+                          ),
+                          //Text(getTracks(), style: TextStyle(color: Colors.white),),
+                        ],
+                      ),
+                    ),
             ],
           ),
         ],

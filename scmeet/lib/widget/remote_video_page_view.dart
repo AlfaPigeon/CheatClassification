@@ -1,13 +1,17 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:scmeet/controller/meeting_controller.dart';
 import 'package:scmeet/webrtc/connection.dart';
 import 'package:scmeet/widget/remote_connection.dart';
 
 class RemoteVideoPageView extends StatefulWidget {
   final List<Connection> connections;
+  // ignore: prefer_collection_literals
+  final Map<String, int>? odResults;
 
-  const RemoteVideoPageView({Key? key, required this.connections})
+  const RemoteVideoPageView({Key? key, required this.connections, required this.odResults})
       : super(key: key);
 
   @override
@@ -15,6 +19,10 @@ class RemoteVideoPageView extends StatefulWidget {
 }
 
 class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
+
+
+  MeetingController meetingController = Get.find();
+
   Widget _buildRemoteViewPage(int start) {
     var widgets = <Widget>[];
     var end = start + 1;
@@ -26,6 +34,20 @@ class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
         .forEach((connection) {
       print("connections name => ${connection.name}");
       print("connections name => ${connection.renderer}");
+
+      int objDetResult = 0;
+      print(meetingController.allUsers);
+
+      for(int i = 0; i < meetingController.allUsers.length; i++) {
+        if(connection.name == meetingController.allUsers[i].name) {
+          widget.odResults!.forEach((key, value) {
+              if(key == meetingController.allUsers[i].id) {
+                objDetResult = value;
+              }
+          });
+          }
+        }
+
       widgets.add(
         Container(
           //width: 600,
@@ -33,7 +55,7 @@ class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
           child: RemoteConnection(
             renderer: connection.renderer,
             connection: connection,
-            length: length,
+            length: length
           ),
         ),
       );

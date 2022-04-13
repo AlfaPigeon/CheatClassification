@@ -14,13 +14,6 @@ class User {
     this.isHost = isHost;
     this.company = company;
 
-    print(this.email);
-    print(this.name);
-    print(this.surname);
-    print(this.id);
-    print(this.isHost);
-    print(this.company);
-
   }
 
 

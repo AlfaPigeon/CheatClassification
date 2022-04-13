@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:eventify/eventify.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:get/get.dart';
+import 'package:scmeet/controller/meeting_controller.dart';
 import 'package:scmeet/webrtc/connection.dart';
 import 'package:scmeet/webrtc/message_format.dart';
 import 'package:scmeet/webrtc/message_payload.dart';
@@ -21,6 +23,8 @@ class Meeting extends EventEmitter {
   List<MessageFormat> messages = [];
   bool videoEnabled = true;
   bool audioEnabled = true;
+
+  MeetingController meetingController = Get.find();
 
   Meeting({required this.meetingId, required this.userId, required this.name, required this.stream}) {
     transport = Transport(
@@ -99,6 +103,8 @@ class Meeting extends EventEmitter {
         emit('stream-changed');
       });
       connections.add(connection);
+      meetingController.connectionLength = meetingController.connectionLength + 1;
+      print("connection length updated !!!!");
       await connection.start();
       emit('connection', null, connection);
       return connection;

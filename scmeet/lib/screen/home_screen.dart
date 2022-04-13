@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:scmeet/constants.dart';
+import 'package:scmeet/controller/meeting_controller.dart';
 import 'package:scmeet/model/meeting_detail.dart';
 import 'package:scmeet/model/user.dart';
 import 'package:scmeet/screen/authentication_screen.dart';
@@ -24,12 +25,35 @@ class _HomeScreenState extends State<HomeScreen> {
   String? meetingId;
   TextEditingController controller = TextEditingController();
   User user = Get.find();
+  MeetingController meetingController = Get.find();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    print("users name => ${user.name}");
+    getAllUsers();
+  }
+
+  void getAllUsers() async {
+    var request = http
+        .get(Uri.parse('http://kemalbayik.com/get_all_users.php'))
+        .then((response) {
+      final data = jsonDecode(response.body);
+      print(data);
+      List<User> tempUsers = [];
+      if (data["success"] != null) {
+        for(int i = 0; i < data["id"].length; i++) {
+          print(data["name"][i]);
+          User tempUser = User();
+          tempUser.setUserData(data["email"][i],data["name"][i], data["surname"][i], data["id"][i],data["is_host"][i] ,"Default");
+          tempUsers.add(tempUser);
+        }
+      } 
+
+      meetingController.allUsers = tempUsers;
+      print("all users ========> ${meetingController.allUsers[1].name}");
+      
+    });
   }
 
   @override
@@ -49,11 +73,13 @@ class _HomeScreenState extends State<HomeScreen> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            user.isHost == "1" ? CustomText(
+            user.isHost == "1"
+                ? CustomText(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     text: user.company.toString(),
-                    color: Colors.white) : const Text(""),
+                    color: Colors.white)
+                : const Text(""),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -63,10 +89,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontWeight: FontWeight.bold,
                     text: "WELCOME ${user.name} ${user.surname}\n",
                     color: Colors.white),
-                    const SizedBox(width: 50),
-                    CustomButton(text: "Log Out", onTap: () {
+                const SizedBox(width: 50),
+                CustomButton(
+                    text: "Log Out",
+                    onTap: () {
                       Get.off(const AuthenticationScreen());
-                    }, width: MediaQuery.of(context).size.width / 10)
+                    },
+                    width: MediaQuery.of(context).size.width / 10)
               ],
             ),
             Responsive.isDesktop(context)
@@ -83,10 +112,12 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        user.isHost == "1" ? meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
-            "Set up new exam room") : const SizedBox(),
+        user.isHost == "1"
+            ? meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
+                "Set up new exam room")
+            : const SizedBox(),
         const SizedBox(width: 30),
-         meetingCard(Icons.add, secondaryColor, "Join Exam Room",
+        meetingCard(Icons.add, secondaryColor, "Join Exam Room",
             "Join an existing exam room"),
       ],
     );
@@ -98,8 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          user.isHost == "1" ? meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
-              "Set up new exam room"): const SizedBox(),
+          user.isHost == "1"
+              ? meetingCard(Icons.video_camera_back, fifthcolor,
+                  "New Exam Room", "Set up new exam room")
+              : const SizedBox(),
           const SizedBox(height: 30),
           meetingCard(Icons.add, secondaryColor, "Join Exam Room",
               "Join an existing exam room"),
@@ -190,7 +223,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void joinMeetingFunction() async {
     final meetingId = controller.text;
-    print('Joined meeting $meetingId');
     validateMeeting(meetingId);
   }
 
@@ -198,7 +230,6 @@ class _HomeScreenState extends State<HomeScreen> {
     var response = await startMeeting();
     final body = json.decode(response.body);
     final meetingId = body['meetingId'];
-    print('Started meeting $meetingId');
     validateMeeting(meetingId);
   }
 
@@ -206,15 +237,12 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       http.Response response = await joinMeeting(meetingId);
       var data = json.decode(response.body);
-      print(data);
-      final meetingDetail = MeetingDetail.fromJson(data);
-      print(meetingDetail.id);
-      print('meetingDetail $meetingDetail');
+      //final meetingDetail = MeetingDetail.fromJson(data);
       join(data);
     } catch (err) {
       const snackbar = SnackBar(content: Text('Invalid MeetingId'));
+      // ignore: deprecated_member_use
       scaffoldKey.currentState?.showSnackBar(snackbar);
-      print("errorr $err");
     }
   }
 

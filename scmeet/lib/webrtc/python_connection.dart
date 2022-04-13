@@ -11,12 +11,16 @@ class PythonConnection extends EventEmitter {
   MediaStream? localStream;
 
   RTCPeerConnection? pythonConnection;
+  int? connectionLength;
   User user = Get.find();
+  int? port;
 
-  PythonConnection({required this.localStream});
+  PythonConnection({required this.localStream, required this.connectionLength});
 
   Future<void> start() async {
     print("python connection startt");
+    port = 9095 + connectionLength!;
+    print("port => $port");
     _makeCall();
   }
 
@@ -35,7 +39,7 @@ class PythonConnection extends EventEmitter {
           var request = http.Request(
             'POST',
             Uri.parse(
-                'http://127.0.0.1:5000/offer'), // CHANGE URL HERE TO LOCAL SERVER
+                'http://217.131.34.131:${port.toString()}/offer'), // CHANGE URL HERE TO LOCAL SERVER
           );
           request.body = json.encode(
             {
@@ -82,6 +86,14 @@ class PythonConnection extends EventEmitter {
   Future<void> _makeCall() async {
     var configuration = <String, dynamic>{
       'sdpSemantics': 'unified-plan',
+      'iceServers': [
+      {
+        "urls": [
+          'stun:stun.l.google.com:19302',
+          'stun:stun1.l.google.com:19302'
+        ],
+      }
+    ]
     };
 
     //* Create Peer Connection

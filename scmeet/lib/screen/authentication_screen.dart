@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:scmeet/constants.dart';
 import 'package:scmeet/widget/authentication_form.dart';
 import 'package:scmeet/widget/custom_text.dart';
 import 'package:scmeet/widget/responsive.dart';
-import 'package:http/http.dart' as http;
 
 class AuthenticationScreen extends StatefulWidget {
   const AuthenticationScreen({Key? key}) : super(key: key);
@@ -22,6 +19,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   TextEditingController hostKeyController = TextEditingController();
 
   bool isLoading = false; 
+  // ignore: prefer_typing_uninitialized_variables
   var connection;
 
   @override
