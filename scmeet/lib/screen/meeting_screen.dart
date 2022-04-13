@@ -132,8 +132,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
     super.deactivate();
     _localRenderer.srcObject = null;
     _localRenderer.dispose();
-    timer!.cancel();
-    pythonTimer!.cancel();
+    if(timer != null) {
+      timer!.cancel();
+    }
+    if(pythonTimer != null) {
+      pythonTimer!.cancel();
+    }
     if (meeting != null) {
       meeting?.destroy();
       meeting = null;

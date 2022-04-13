@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -24,12 +25,12 @@ class RemoteConnection extends StatefulWidget {
 class _RemoteConnectionState extends State<RemoteConnection> {
   Color borderColor = Colors.green;
   MeetingController meetingController = Get.find();
-
+  StreamSubscription? listen;
 
   @override
   void initState() {
     super.initState();
-    meetingController.odResults.listen((p0) {
+      listen = meetingController.odResults.listen((p0) {
       print("listening");
       setState(() {
         borderColor = borderColorDecision(p0); 
@@ -42,6 +43,7 @@ class _RemoteConnectionState extends State<RemoteConnection> {
   @override
   void dispose() {
     super.dispose();
+    listen!.cancel();
   }
 
   Color borderColorDecision(var results) {
