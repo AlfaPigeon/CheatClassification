@@ -78,9 +78,13 @@ class _MeetingScreenState extends State<MeetingScreen> {
   User user = getx.Get.find();
   Timer? timer;
   Timer? pythonTimer;
+  Timer? meetingTime;
   // ignore: prefer_collection_literals
   Map<String, int>? objDetResults = Map();
   MediaStream? pythonLocalStream;
+
+  int time = 0;
+  Duration duration = Duration();
 
   @override
   void initState() {
@@ -98,7 +102,34 @@ class _MeetingScreenState extends State<MeetingScreen> {
           () => connectToPython(
               pythonLocalStream, meetingController.connectionLength));
     }
+
+    startTimer();
   }
+
+  Widget buildClock() {
+    String twoDigits(int n) => n.toString().padLeft(2,'0');
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    return Text("$minutes:$seconds", style: myTextStyle(20, FontWeight.bold, thirdColor),);
+  }
+
+  void addTime() {
+    final addSeconds = 1;
+
+    setState(() {
+      final seconds = duration.inSeconds + addSeconds;
+
+      duration = Duration(seconds: seconds);
+    });
+  }
+
+  void startTimer() {
+  const oneSec = Duration(seconds: 1);
+  meetingTime = Timer.periodic(
+    oneSec,
+    (_) => addTime()
+  );
+}
 
   void getObjectDetectionResults() async {
     var sqldata;
@@ -137,6 +168,9 @@ class _MeetingScreenState extends State<MeetingScreen> {
     }
     if(pythonTimer != null) {
       pythonTimer!.cancel();
+    }
+    if(meetingTime != null) {
+      meetingTime!.cancel();
     }
     if (meeting != null) {
       meeting?.destroy();
@@ -406,6 +440,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
                           //Text(getTracks(), style: TextStyle(color: Colors.white),),
                         ],
                       ),
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: buildClock(),
                     )
                   ],
                 ),
