@@ -45,6 +45,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
     });
     var data;
     PostgreSQLConnection connection;
+    try {
     await http.post(
         Uri.parse(
             "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAZfm-YeX--7DV2Ues9A6tR8ljtj5AGYNc"),
@@ -55,11 +56,19 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
         }).then((response) {
       data = jsonDecode(response.body);
     });
+    } catch (e) {
+      print(e);
+      
+    }
     print("data ${data}");
 
     if (data["localId"] != null) {
       var sqldata;
-      await http.post(Uri.parse("http://kemalbayik.com/signin.php"), body: {
+      await http.post(Uri.parse("http://kemalbayik.com/signin.php"), 
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: {
         "id": data["localId"],
       }).then((response) {
         sqldata = jsonDecode(response.body);
