@@ -19,7 +19,7 @@ class PythonConnection extends EventEmitter {
 
   Future<void> start() async {
     print("python connection startt");
-    port = 9095 + connectionLength!;
+    port = 9094 + connectionLength!;
     print("port => $port");
     _makeCall();
   }

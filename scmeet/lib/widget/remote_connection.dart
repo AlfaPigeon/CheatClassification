@@ -108,7 +108,7 @@ class _RemoteConnectionState extends State<RemoteConnection> {
                       children: [
                         Container(
                           padding: const EdgeInsets.all(5),
-                          color: thirdColor,
+                          color: fifthcolor,
                           child: CustomText(
                             text: widget.connection!.name,
                             fontSize: MediaQuery.of(context).size.width / 30,
@@ -122,7 +122,7 @@ class _RemoteConnectionState extends State<RemoteConnection> {
                         ),
                         Container(
                           padding: const EdgeInsets.all(5),
-                          color: thirdColor,
+                          color: fifthcolor,
                           child: Row(
                             children: <Widget>[
                               Icon(

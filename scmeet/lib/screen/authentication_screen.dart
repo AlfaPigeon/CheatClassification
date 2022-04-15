@@ -88,7 +88,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               fontSize: size.width / 15,
               fontWeight: FontWeight.bold,
               text: "Welcome to Online \nExam Inspection Platform",
-              color: Colors.white,
+              color:Color.fromARGB(235, 200, 163, 112),
             ),
             //SizedBox(height: 10),
             AuthenticationForm(
