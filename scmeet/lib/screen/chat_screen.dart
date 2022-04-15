@@ -11,16 +11,14 @@ import '../constants.dart';
 
 typedef SendMessageCallback = void Function(String text);
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   final List<MessageFormat> messages;
   final SendMessageCallback onSendMessage;
-  final TextEditingController textEditingController = TextEditingController();
   final List<Connection?> connections;
   final String userId;
   final String userName;
-  final _scrollcontroller = ScrollController();
 
-  ChatScreen({Key? key, 
+  const ChatScreen({Key? key, 
     required this.messages,
     required this.onSendMessage,
     required this.connections,
@@ -28,20 +26,30 @@ class ChatScreen extends StatelessWidget {
     required this.userName,
   }) : super(key: key);
 
+    @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+
+  TextEditingController? textEditingController;
+  
+  @override
+  initState() {
+    super.initState();
+    textEditingController = TextEditingController();
+  }
   List<Widget> _buildMessages() {
     // ignore: prefer_collection_literals
     final nameMap = Map<String, String>();
     // ignore: avoid_function_literals_in_foreach_calls
-    connections.forEach((connection) {
+    widget.connections.forEach((connection) {
       nameMap[connection!.userId] = connection.name;
     });
-    return messages
+    return widget.messages
         .map((message) => ListTile(
               title: Text(
-                message.userId
-                /*nameMap.containsKey(message.userId)
-                    ? nameMap[message.userId]
-                    : (message.userId == userId ? userName : '')*/,
+                message.userId,
                 style: TextStyle(fontWeight: FontWeight.bold, color: fifthcolor), // chatte email kismi
                 
               ),
@@ -55,17 +63,15 @@ class ChatScreen extends StatelessWidget {
   }
 
   void onSendClick() {
-    var text = textEditingController.text;
-    onSendMessage(text);
+    var text = textEditingController!.text;
+    widget.onSendMessage(text);
+    setState(() {
+      textEditingController!.clear();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-   /* Timer(
-      const Duration(seconds: 1),
-      () =>
-          _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent),
-    ); */
     return  Expanded (
     child: Column(
           children: <Widget>[
@@ -79,7 +85,6 @@ class ChatScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView(
-                controller: _scrollcontroller,
                 children: ListTile.divideTiles(
                   context: context,
                   tiles: _buildMessages(),
@@ -118,3 +123,4 @@ class ChatScreen extends StatelessWidget {
     );
   }
 }
+
