@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:analog_clock/analog_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:scmeet/constants.dart';
 import 'package:scmeet/controller/meeting_controller.dart';
 import 'package:scmeet/model/meeting_detail.dart';
@@ -27,32 +30,40 @@ class _HomeScreenState extends State<HomeScreen> {
   User user = Get.find();
   MeetingController meetingController = Get.find();
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
+  Timer? timer;
+  String? time;
+  var day = DateFormat('EEEE').format(DateTime.now());
   @override
   void initState() {
     super.initState();
     getAllUsers();
+    timer = Timer.periodic(
+        const Duration(seconds: 1), (Timer t) => getSystemTime());
+  }
+
+  getSystemTime() {
+    var now = DateTime.now();
+    setState(() {
+      time = DateFormat("H:m:s").format(now);
+    });
   }
 
   void getAllUsers() async {
-    var request = http
+    http
         .get(Uri.parse('http://kemalbayik.com/get_all_users.php'))
         .then((response) {
       final data = jsonDecode(response.body);
-      print(data);
       List<User> tempUsers = [];
       if (data["success"] != null) {
-        for(int i = 0; i < data["id"].length; i++) {
-          print(data["name"][i]);
+        for (int i = 0; i < data["id"].length; i++) {
           User tempUser = User();
-          tempUser.setUserData(data["email"][i],data["name"][i], data["surname"][i], data["id"][i],data["is_host"][i] ,"Default");
+          tempUser.setUserData(data["email"][i], data["name"][i],
+              data["surname"][i], data["id"][i], data["is_host"][i], "Default");
           tempUsers.add(tempUser);
         }
-      } 
+      }
 
       meetingController.allUsers = tempUsers;
-      print("all users ========> ${meetingController.allUsers[1].name}");
-      
     });
   }
 
@@ -73,9 +84,23 @@ class _HomeScreenState extends State<HomeScreen> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Container(
+              width: MediaQuery.of(context).size.width / 4,
+              decoration: BoxDecoration(
+                color: secondaryColor,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              child: Column(
+                children: [
+                  Text(day.toString(), style: myTextStyle(MediaQuery.of(context).size.width / 30, FontWeight.bold, Colors.white),),
+                  const SizedBox(height: 10),
+                  Text(time==null ?"":time.toString(), style: myTextStyle(MediaQuery.of(context).size.width / 30, FontWeight.bold, Colors.white),),
+                ],
+              ),
+            ),
             user.isHost == "1"
                 ? CustomText(
-                    fontSize: 28,
+                    fontSize: MediaQuery.of(context).size.width / 25,
                     fontWeight: FontWeight.bold,
                     text: user.company.toString(),
                     color: Colors.white)
@@ -87,15 +112,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 CustomText(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    text: "WELCOME ${user.name} ${user.surname}\n",
+                    text: "Welcome ${user.name} ${user.surname}\n",
                     color: Colors.white),
-                const SizedBox(width: 50),
-                CustomButton(
-                    text: "Log Out",
-                    onTap: () {
-                      Get.off(const AuthenticationScreen());
-                    },
-                    width: MediaQuery.of(context).size.width / 10)
               ],
             ),
             Responsive.isDesktop(context)
@@ -108,17 +126,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   desktopScreen(Size size) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: [
-        user.isHost == "1"
-            ? meetingCard(Icons.video_camera_back, fifthcolor, "New Exam Room",
-                "Set up new exam room")
-            : const SizedBox(),
-        const SizedBox(width: 30),
-        meetingCard(Icons.add, secondaryColor, "Join Exam Room",
-            "Join an existing exam room"),
+        SizedBox(
+          width: 200,
+          height: 70,
+          child: ElevatedButton(
+              child: Text("Log Out",
+                  style: myTextStyle(20, FontWeight.bold, Colors.white)),
+              onPressed: () {
+                Get.off(const AuthenticationScreen());
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(secondaryColor),
+                textStyle: MaterialStateProperty.all(
+                    myTextStyle(20, FontWeight.bold, Colors.white)),
+              )),
+        ),
+        const SizedBox(height: 50),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            user.isHost == "1"
+                ? meetingCard(Icons.video_camera_back, fifthcolor,
+                    "New Exam Room", "Set up new exam room")
+                : const SizedBox(),
+            const SizedBox(width: 30),
+            meetingCard(Icons.add, secondaryColor, "Join Exam Room",
+                "Join an existing exam room"),
+          ],
+        ),
       ],
     );
   }
@@ -129,6 +167,20 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox(
+            width: 150,
+            height: 50,
+            child: ElevatedButton(
+                child: Text("Log Out",
+                    style: myTextStyle(18, FontWeight.bold, Colors.white)),
+                onPressed: () {
+                  Get.off(const AuthenticationScreen());
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(secondaryColor),
+                )),
+          ),
+          const SizedBox(height: 20),
           user.isHost == "1"
               ? meetingCard(Icons.video_camera_back, fifthcolor,
                   "New Exam Room", "Set up new exam room")

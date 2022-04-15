@@ -25,9 +25,6 @@ class Transport extends EventEmitter {
     try {
       if (retryCount <= maxRetryCount) {
         retryCount++;
-        //https://github.com/dart-lang/web_socket_channel/issues/61#issuecomment-585564273
-        /*var ws = await WebSocket.connect(url).timeout(Duration(seconds: 5));
-        channel = IOWebSocketChannel(ws);*/
         channel = WebSocketChannel.connect(
           Uri.parse(url),
         );

@@ -1,8 +1,9 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:postgres/postgres.dart';
 import 'package:scmeet/constants.dart';
 import 'package:scmeet/controller/authentication_controller.dart';
 import 'package:scmeet/model/user.dart';
@@ -44,8 +45,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
       isLoading = true;
     });
     var data;
-    PostgreSQLConnection connection;
-    try {
     await http.post(
         Uri.parse(
             "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAZfm-YeX--7DV2Ues9A6tR8ljtj5AGYNc"),
@@ -56,11 +55,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
         }).then((response) {
       data = jsonDecode(response.body);
     });
-    } catch (e) {
-      print(e);
-      
-    }
-    print("data ${data}");
 
     if (data["localId"] != null) {
       var sqldata;
@@ -73,7 +67,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
       }).then((response) {
         sqldata = jsonDecode(response.body);
       });
-      print("signin data ${data["user_uid"]}");
       user.setUserData(
           widget.emailController.text,
           sqldata["name"],
@@ -82,27 +75,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
           sqldata["is_host"],
           sqldata["company"]);
       Get.off(const HomeScreen());
-
-      /*connection = PostgreSQLConnection(
-          "manny.db.elephantsql.com", 5432, "yudejpbv",
-          username: "yudejpbv",
-          password: "8gCcTUmsAZsaYCO4igdMjHJtYaFyrBSK",
-          timeoutInSeconds: 20);
-      await connection.open();
-      List<List<dynamic>> results = await connection
-          .query("SELECT * FROM users WHERE id = '${data["localId"]}'");
-
-      List<List<dynamic>> keyResult = await connection
-          .query("SELECT * FROM HOST_KEYS WHERE host_id = '${results[0][5]}'");
-
-      print(keyResult);
-      String company = keyResult[0][1];
-
-      print(results[0][1]);
-      user.setUserData(widget.emailController.text, results[0][1],
-          results[0][2], data["localId"], results[0][4], company);
-      await connection.close();
-      Get.to(const HomeScreen());*/
     } else {
       Get.defaultDialog(
           title: data["error"]["message"],
@@ -127,7 +99,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
       }).then((response) {
         keydata = jsonDecode(response.body);
       });
-      print(keydata);
       if (!keydata["error"]) {
         var data;
         await http.post(
@@ -140,8 +111,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
             }).then((response) {
           data = jsonDecode(response.body);
         });
-        print("data ${data}");
-
         if (data["localId"] != null) {
           var sqldata;
           await http.post(Uri.parse("http://kemalbayik.com/signup.php"), body: {
@@ -154,8 +123,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
           }).then((response) {
             sqldata = jsonDecode(response.body);
           });
-
-          print("signup data $sqldata");
           user.setUserData(
               widget.emailController.text,
               widget.nameController.text,
@@ -186,7 +153,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
           }).then((response) {
         data = jsonDecode(response.body);
       });
-      print("data ${data}");
 
       if (data["localId"] != null) {
         var sqldata;
@@ -200,8 +166,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
         }).then((response) {
           sqldata = jsonDecode(response.body);
         });
-
-        print("signup data ${sqldata["user_uid"]}");
         user.setUserData(
             widget.emailController.text,
             widget.nameController.text,
@@ -362,7 +326,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                       borderRadius: BorderRadius.circular(2.0),
                     ),
                     side: MaterialStateBorderSide.resolveWith(
-                      (states) => BorderSide(width: 2.0, color: Colors.white),
+                      (states) => const BorderSide(width: 2.0, color: Colors.white),
                     ),
                     value: isHost,
                     onChanged: (bool? value) {
