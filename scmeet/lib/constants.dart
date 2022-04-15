@@ -8,6 +8,7 @@ Color fourthColor = const Color.fromARGB(255, 51, 84, 116);
 Color fifthcolor = const Color.fromARGB(235, 200, 163, 112);
 Color iconColor = const Color(0xff7c807f);
 Color textInputColor = const Color(0xffe7edeb);
+Color logout = Color.fromARGB(235, 150, 29, 20);
 
 TextStyle myTextStyle(double fontSize, FontWeight fontWeight, Color color) {
   return GoogleFonts.montserrat(

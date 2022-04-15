@@ -93,20 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width / 4,
-              decoration: BoxDecoration(
-                color: secondaryColor,
-                borderRadius: BorderRadius.circular(20)
-              ),
-              child: Column(
-                children: [
-                  Text(day.toString(), style: myTextStyle(MediaQuery.of(context).size.width / 30, FontWeight.bold, Colors.white),),
-                  const SizedBox(height: 10),
-                  Text(time==null ?"":time.toString(), style: myTextStyle(MediaQuery.of(context).size.width / 30, FontWeight.bold, Colors.white),),
-                ],
-              ),
-            ),
             user.isHost == "1"
                 ? CustomText(
                     fontSize: MediaQuery.of(context).size.width / 25,
@@ -130,6 +116,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 : mobileScreen(_size),
           ],
         ),
+         Container(
+          alignment: Alignment.topRight,
+           height: 100.0,
+              width: MediaQuery.of(context).size.width / 1.01,
+              decoration: BoxDecoration(
+                color: secondaryColor.withOpacity(0),
+                borderRadius: BorderRadius.circular(20)
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(day.toString(), style: myTextStyle(MediaQuery.of(context).size.width / 70, FontWeight.bold, Colors.white),),
+                  const SizedBox(height: 10),
+                  Text(time==null ?"":time.toString(), style: myTextStyle(MediaQuery.of(context).size.width / 70, FontWeight.bold, Colors.white),),
+                ],
+              ),
+        ),
       ]),
     );
   }
@@ -137,21 +140,6 @@ class _HomeScreenState extends State<HomeScreen> {
   desktopScreen(Size size) {
     return Column(
       children: [
-        SizedBox(
-          width: 200,
-          height: 70,
-          child: ElevatedButton(
-              child: Text("Log Out",
-                  style: myTextStyle(20, FontWeight.bold, Colors.white)),
-              onPressed: () {
-                Get.off(const AuthenticationScreen());
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(secondaryColor),
-                textStyle: MaterialStateProperty.all(
-                    myTextStyle(20, FontWeight.bold, Colors.white)),
-              )),
-        ),
         const SizedBox(height: 50),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -164,6 +152,9 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 30),
             meetingCard(Icons.add, secondaryColor, "Join Exam Room",
                 "Join an existing exam room"),
+            const SizedBox(width: 30),
+            logoutCard(Icons.exit_to_app, logout, "Log Out",
+                "Log out from the account"),
           ],
         ),
       ],
@@ -176,29 +167,57 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 150,
-            height: 50,
-            child: ElevatedButton(
-                child: Text("Log Out",
-                    style: myTextStyle(18, FontWeight.bold, Colors.white)),
-                onPressed: () {
-                  Get.off(const AuthenticationScreen());
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(secondaryColor),
-                )),
-          ),
           const SizedBox(height: 20),
           user.isHost == "1"
               ? meetingCard(Icons.video_camera_back, fifthcolor,
                   "New Exam Room", "Set up new exam room")
               : const SizedBox(),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           meetingCard(Icons.add, secondaryColor, "Join Exam Room",
               "Join an existing exam room"),
+          const SizedBox(height: 20),
+          logoutCard(Icons.exit_to_app, logout, "Log Out",
+              "Log out from the account"),
         ],
       ),
+    );
+  }
+
+  Widget logoutCard(IconData icon, Color color, String text, String secondText) {
+    return GestureDetector(
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: BoxDecoration(
+          color: color.withOpacity(1),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, bottom: 30.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 50, color: Colors.white),
+              const SizedBox(height: 20),
+              CustomText(
+                  fontSize: 25,
+                  fontWeight: FontWeight.normal,
+                  text: text,
+                  color: Colors.white),
+              const SizedBox(height: 10),
+              CustomText(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w300,
+                  text: secondText,
+                  color: Colors.white)
+            ],
+          ),
+        ),
+      ),
+      onTap: () { 
+         Get.off(const AuthenticationScreen());
+      },
     );
   }
 
