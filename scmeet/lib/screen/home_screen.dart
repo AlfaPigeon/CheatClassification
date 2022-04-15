@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 : mobileScreen(_size),
           ],
         ),
-         Container(
+        Responsive.isDesktop(context) ? Container(
           alignment: Alignment.topRight,
            height: 100.0,
               width: MediaQuery.of(context).size.width / 1.01,
@@ -123,7 +123,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(time==null ?"":time.toString(), style: myTextStyle(MediaQuery.of(context).size.width / 70, FontWeight.bold, Colors.white),),
                 ],
               ),
-        ),
+        )
+        : Container()
       ]),
     );
   }
@@ -138,14 +139,14 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             user.isHost == "1"
                 ? meetingCard(Icons.video_camera_back, fifthcolor,
-                    "New Exam Room", "Set up new exam room")
+                    "New Exam Room", "Set up new exam room", 1)
                 : const SizedBox(),
             const SizedBox(width: 30),
             meetingCard(Icons.add, secondaryColor, "Join Exam Room",
-                "Join an existing exam room"),
+                "Join an existing exam room", 1),
             const SizedBox(width: 30),
             logoutCard(Icons.exit_to_app, logout, "Log Out",
-                "Log out from the account"),
+                "Log out from the account", 1),
           ],
         ),
       ],
@@ -158,45 +159,45 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           user.isHost == "1"
               ? meetingCard(Icons.video_camera_back, fifthcolor,
-                  "New Exam Room", "Set up new exam room")
+                  "New Exam Room", "Set up new exam room", 1.6)
               : const SizedBox(),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           meetingCard(Icons.add, secondaryColor, "Join Exam Room",
-              "Join an existing exam room"),
-          const SizedBox(height: 20),
+              "Join an existing exam room", 1.6),
+          const SizedBox(height: 10),
           logoutCard(Icons.exit_to_app, logout, "Log Out",
-              "Log out from the account"),
+              "Log out from the account", 1.6),
         ],
       ),
     );
   }
 
-  Widget logoutCard(IconData icon, Color color, String text, String secondText) {
+  Widget logoutCard(IconData icon, Color color, String text, String secondText, double screen) {
     return GestureDetector(
       child: Container(
-        width: 200,
-        height: 200,
+        width: 200 / screen,
+        height: 200 / screen,
         decoration: BoxDecoration(
           color: color.withOpacity(1),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, bottom: 30.0),
+          padding: EdgeInsets.only(left: (16.0 / screen), bottom: (30.0 / screen)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 50, color: Colors.white),
-              const SizedBox(height: 20),
+              Icon(icon, size: (50/screen), color: Colors.white),
+              SizedBox(height: (20/screen)),
               CustomText(
-                  fontSize: 25,
+                  fontSize: (25 / screen),
                   fontWeight: FontWeight.normal,
                   text: text,
                   color: Colors.white),
-              const SizedBox(height: 10),
+              SizedBox(height: (10/screen)),
               CustomText(
                   fontSize: 13,
                   fontWeight: FontWeight.w300,
@@ -213,29 +214,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget meetingCard(
-      IconData icon, Color color, String text, String secondText) {
+      IconData icon, Color color, String text, String secondText, double screen) { //Dekstopsa = 1, mobil = 1.5
     return GestureDetector(
       child: Container(
-        width: 200,
-        height: 200,
+        width: 200 / screen,
+        height: 200 / screen,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
+          padding: EdgeInsets.only(left: 16.0 / screen),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 50, color: Colors.white),
-              const SizedBox(height: 20),
+              Icon(icon, size: (50 / screen), color: Colors.white),
+              SizedBox(height: (20/screen)),
               CustomText(
-                  fontSize: 25,
+                  fontSize: (25 / screen),
                   fontWeight: FontWeight.normal,
                   text: text,
                   color: Colors.white),
-              const SizedBox(height: 10),
+              SizedBox(height: (10 / screen)),
               CustomText(
                   fontSize: 13,
                   fontWeight: FontWeight.w300,
