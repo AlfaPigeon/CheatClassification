@@ -259,7 +259,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
     return Center(
       child: Container(
         width: 300,
-        height: 600,
+        height: 700,
         decoration: const BoxDecoration(
           color: Colors.transparent,
         ),

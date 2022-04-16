@@ -94,7 +94,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     initRenderers();
     start();
     if (user.isHost == "1") {
-      timer = Timer.periodic(const Duration(seconds: 5),
+      timer = Timer.periodic(const Duration(seconds: 1),
           (Timer t) => getObjectDetectionResults());
     }
     if (user.isHost == "0") {
