@@ -9,6 +9,8 @@ class MeetingController extends GetxController {
 
   RxMap odResults = {}.obs;
 
+  int? port;
+
   updateOdResults(Map<String,int> results) {
     results.forEach((key, val) {
       if (odResults.containsKey(key)) {

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -15,7 +17,6 @@ import 'package:scmeet/webrtc/meeting.dart';
 import 'package:scmeet/webrtc/message_format.dart';
 import 'package:scmeet/webrtc/python_connection.dart';
 import 'package:scmeet/widget/control_panel.dart';
-import 'package:scmeet/widget/custom_button.dart';
 import 'package:scmeet/widget/remote_video_page_view.dart';
 import 'package:http/http.dart' as http;
 
@@ -79,23 +80,22 @@ class _MeetingScreenState extends State<MeetingScreen> {
   Timer? timer;
   Timer? pythonTimer;
   Timer? meetingTime;
+  Timer? pythonTimer2;
   // ignore: prefer_collection_literals
   Map<String, int>? objDetResults = Map();
   MediaStream? pythonLocalStream;
 
   int time = 0;
-  Duration duration = Duration();
+  Duration duration = const Duration();
 
   @override
   void initState() {
     super.initState();
     initRenderers();
     start();
-    print("meeetttiiing");
     if (user.isHost == "1") {
       timer = Timer.periodic(const Duration(seconds: 5),
           (Timer t) => getObjectDetectionResults());
-      print("timer set");
     }
     if (user.isHost == "0") {
       pythonTimer = Timer(
@@ -115,7 +115,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   void addTime() {
-    final addSeconds = 1;
+    const addSeconds = 1;
 
     setState(() {
       final seconds = duration.inSeconds + addSeconds;
@@ -140,10 +140,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
       sqldata = jsonDecode(response.body);
     });
 
-    print("sqldata data $sqldata");
     for (int i = 0; i < sqldata["user_id"].length; i++) {
       if (objDetResults!.containsKey(sqldata["user_id"][i])) {
-        print("UPDATEEE");
         objDetResults!.update(sqldata["user_id"][i],
             (value) => int.parse(sqldata["percentage"][i]));
       } else {
@@ -151,12 +149,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
             sqldata["user_id"][i], () => int.parse(sqldata["percentage"][i]));
       }
     }
-    print("oBJ DET  resultss =>${objDetResults}");
     meetingController.updateOdResults(objDetResults!);
     print("od resultss =>${meetingController.odResults}");
-
-    print(objDetResults!.keys);
-    print(objDetResults!.values);
   }
 
   @override
@@ -201,8 +195,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
       name: widget.name,
     );
 
-    print(
-        "meeting connection length ============> ${meeting!.connections.length}");
     setState(() {
       pythonLocalStream = _localstream;
     });
@@ -358,38 +350,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     }
   }
 
-  List<Widget> _buildActions() {
-    var widgets = <Widget>[
-      /* GestureDetector(
-        onTap:() => onLeave ,
-        child: const Icon(Icons.meeting_room), 
-      ),*/
-    ];
-    if (isHost()) {
-      widgets.add(
-        CustomButton(
-          text: 'End',
-          onTap: onEnd,
-          width: MediaQuery.of(context).size.width / 4,
-        ),
-      );
-    }
-    /* widgets.add(PopupMenuButton<PopUpChoice>(
-      onSelected: _select,
-      itemBuilder: (BuildContext context) {
-        return choices.map((PopUpChoice choice) {
-          return PopupMenuItem<PopUpChoice>(
-            value: choice,
-            child: Text(choice.title),
-          );
-        }).toList();
-      },
-    )); */
-    return widgets;
-  }
-
   Widget _buildMeetingRoom() {
-    getTracks();
     return SafeArea(
       child: Row(
         //crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,19 +433,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
     );
   }
 
-  getTracks() {
-    String tr = "";
-
-    meeting?.stream!.getVideoTracks().map((track) {
-      print(" track =>  ${track.captureFrame()}");
-      setState(() {
-        tr = track.captureFrame().toString();
-      });
-    });
-
-    return tr;
-  }
-
   @override
   Widget build(BuildContext context) {
     return meeting == null
@@ -502,10 +450,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
           )
         : Scaffold(
             key: scaffoldKey,
-            /*nameMapappBar: AppBar(
-              title: const Text("Online Exam Inspection Platform"),
-              backgroundColor: fourthColor, /*actions: _buildActions(),*/ 
-            ),*/
             body: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               ControlPanel(
                 onAudioToggle: onAudioToggle,

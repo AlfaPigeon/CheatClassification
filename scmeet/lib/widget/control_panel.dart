@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scmeet/constants.dart';
 import 'package:scmeet/model/user.dart';
 import 'package:scmeet/widget/custom_button.dart';
 
@@ -77,7 +76,7 @@ class ControlPanel extends StatelessWidget {
         user.isHost == "1" ? IconButton(
           onPressed: end,
           icon: const Icon(Icons.cancel_presentation), 
-          color: Color.fromARGB(255, 241, 56, 42),
+          color: const Color.fromARGB(255, 241, 56, 42),
           iconSize: 24.0,
         ) : const SizedBox(),
     //    if (host == true){
@@ -115,7 +114,7 @@ class ControlPanel extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: widgets,
       ),
-      color: Color.fromARGB(255, 51, 84, 116),
+      color: const Color.fromARGB(255, 51, 84, 116),
       height: MediaQuery.of(context).size.height,
       width: 45,
     );
