@@ -1,9 +1,7 @@
 import 'package:eventify/eventify.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:scmeet/model/user.dart';
 

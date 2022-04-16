@@ -2,6 +2,7 @@ import 'package:eventify/eventify.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:scmeet/controller/meeting_controller.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -14,6 +15,8 @@ class PythonConnection extends EventEmitter {
   int? connectionLength;
   User user = Get.find();
   int? port;
+  Timer? timer;
+  MeetingController meetingController = Get.find();
 
   PythonConnection({required this.localStream, required this.connectionLength});
 
@@ -21,6 +24,9 @@ class PythonConnection extends EventEmitter {
     print("python connection startt");
     port = 9094 + connectionLength!;
     print("port => $port");
+    meetingController.port = port;
+    print("port setted");
+    print(meetingController.port);
     _makeCall();
   }
 
@@ -78,15 +84,16 @@ class PythonConnection extends EventEmitter {
         RTCIceGatheringState.RTCIceGatheringStateComplete) {
       return true;
     } else {
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       return await _waitForGatheringComplete(_);
     }
   }
 
+
+
   Future<void> _makeCall() async {
-    var configuration = <String, dynamic>{
-      'sdpSemantics': 'unified-plan',
-      'iceServers': [
+    final Map<String, dynamic> configuration = {
+    'iceServers': [
       {
         "urls": [
           'stun:stun.l.google.com:19302',
@@ -94,7 +101,7 @@ class PythonConnection extends EventEmitter {
         ],
       }
     ]
-    };
+  };
 
     //* Create Peer Connection
     if (pythonConnection != null) return;
@@ -122,7 +129,8 @@ class PythonConnection extends EventEmitter {
           'minWidth':
               '500', // Provide your own width, height and frame rate here
           'minHeight': '500',
-          'minFrameRate': '30',
+          'minFrameRate': '5',
+          'maxFrameRate': '10'
         },
         // 'facingMode': 'user',
         'facingMode': 'environment',
@@ -143,7 +151,7 @@ class PythonConnection extends EventEmitter {
       print("NEGOTIATE");
       await _negotiateRemoteConnection();
     } catch (e) {
-      print(e.toString());
+      //print(e.toString());
     }
   }
 }
