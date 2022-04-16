@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls, avoid_unnecessary_containers, unused_local_variable
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -27,16 +29,12 @@ class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
     var widgets = <Widget>[];
     var end = start + 1;
     var length = widget.connections.length;
-    print("length => $length");
-    print("end => $end");
     widget.connections
         //.sublist(start, end <= length ? end : length)
         .forEach((connection) {
-      print("connections name => ${connection.name}");
-      print("connections name => ${connection.renderer}");
 
       int objDetResult = 0;
-      print(meetingController.allUsers);
+
 
       for(int i = 0; i < meetingController.allUsers.length; i++) {
         if(connection.name == meetingController.allUsers[i].name) {
@@ -76,7 +74,6 @@ class _RemoteVideoPageViewState extends State<RemoteVideoPageView> {
       for (int j = 0; j < sqrt(widgets.length).ceil(); j++) {
         if (widgetCount < widgets.length) {
           cols.add(widgets[widgetCount]);
-          print(widgetCount);
           widgetCount++;
         }
       }

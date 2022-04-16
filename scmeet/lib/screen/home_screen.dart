@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomText(
-                    fontSize: 28,
+                    fontSize: MediaQuery.of(context).size.width / 27,
                     fontWeight: FontWeight.bold,
                     text: "Welcome ${user.name} ${user.surname}\n",
                     color: Colors.white),
@@ -246,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.white),
               SizedBox(height: (10 / screen)),
               CustomText(
-                  fontSize: 13,
+                  fontSize: 15 / screen ,
                   fontWeight: FontWeight.w300,
                   text: secondText,
                   color: Colors.white)
